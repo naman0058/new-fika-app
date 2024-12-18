@@ -1,0 +1,282 @@
+<%- include ('./navbar1.ejs') %>
+
+
+
+  
+
+
+          <!-- Orders content -->
+          <div class="col-lg-9">
+            <div class="ps-lg-3 ps-xl-0">
+
+              <!-- Page title + Sorting selects -->
+              <div class="row align-items-center pb-3 pb-md-4 mb-md-1 mb-lg-2">
+                <div class="col-md-4 col-xl-6 mb-3 mb-md-0">
+                  <h1 class="h2 me-3 mb-0">Orders</h1>
+                </div>
+                <!-- <div class="col-md-8 col-xl-6">
+                  <div class="row row-cols-1 row-cols-sm-2 g-3 g-xxl-4">
+                    <div class="col">
+                      <select class="form-select" data-select="{
+                        &quot;placeholderValue&quot;: &quot;Select status&quot;,
+                        &quot;choices&quot;: [
+                          {
+                            &quot;value&quot;: &quot;&quot;,
+                            &quot;label&quot;: &quot;Select status&quot;,
+                            &quot;placeholder&quot;: true
+                          },
+                          {
+                            &quot;value&quot;: &quot;inprogress&quot;,
+                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-info rounded-circle p-1 me-2\&quot;></span>In progress</div>&quot;
+                          },
+                          {
+                            &quot;value&quot;: &quot;delivered&quot;,
+                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-success rounded-circle p-1 me-2\&quot;></span>Delivered</div>&quot;
+                          },
+                          {
+                            &quot;value&quot;: &quot;canceled&quot;,
+                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-danger rounded-circle p-1 me-2\&quot;></span>Canceled</div>&quot;
+                          },
+                          {
+                            &quot;value&quot;: &quot;delayed&quot;,
+                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-warning rounded-circle p-1 me-2\&quot;></span>Delayed</div>&quot;
+                          }
+                        ]
+                      }" data-select-template="true" aria-label="Status sorting"></select>
+                    </div>
+                    <div class="col">
+                      <select class="form-select" data-select="{&quot;removeItemButton&quot;: false}" aria-label="Timeframe sorting">
+                        <option value="all-time">For all time</option>
+                        <option value="last-year">For last year</option>
+                        <option value="last-3-months">For last 3 months</option>
+                        <option value="last-30-days">For last 30 days</option>
+                        <option value="last-week">For last week</option>
+                      </select>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+
+
+              <!-- Sortable orders table -->
+              <div data-filter-list="{&quot;listClass&quot;: &quot;orders-list&quot;, &quot;sortClass&quot;: &quot;orders-sort&quot;, &quot;valueNames&quot;: [&quot;date&quot;, &quot;total&quot;]}">
+                <table class="table align-middle fs-sm text-nowrap">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="py-3 ps-0">
+                        <span class="text-body fw-normal">Order <span class="d-none d-md-inline">#</span></span>
+                      </th>
+                      <th scope="col" class="py-3 d-none d-md-table-cell">
+                        <button type="button" class="btn orders-sort fw-normal text-body p-0" data-sort="date">Order date</button>
+                      </th>
+                      <th scope="col" class="py-3 ps-0">
+                        <span class="text-body fw-normal">Order <span class="d-none d-md-inline">Name</span></span>
+                      </th>
+                      <th scope="col" class="py-3 d-none d-md-table-cell">
+                        <span class="text-body fw-normal">Status</span>
+                      </th>
+                      <th scope="col" class="py-3 d-none d-md-table-cell">
+                        <button type="button" class="btn orders-sort fw-normal text-body p-0" data-sort="total">Total</button>
+                      </th>
+                      <th scope="col" class="py-3">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-body-emphasis orders-list">
+
+                    <!-- Item -->
+
+<% for(i=0;i<result[1].length;i++){ %>
+
+                      <tr>
+                      <td class="fw-medium pt-2 pb-3 py-md-2 ps-0">
+                        <!-- <a class="d-inline-block animate-underline text-body-emphasis text-decoration-none py-2" href="#orderDetails" data-bs-toggle="offcanvas" aria-controls="orderDetails" aria-label="Show order details"> -->
+                          <a class="d-inline-block animate-underline text-body-emphasis text-decoration-none py-2" 
+                          href="#orderDetails" 
+                          data-bs-toggle="offcanvas" 
+                          data-orderid="<%=result[1][i].orderid%>"
+                          data-status="<%=result[1][i].status.toUpperCase()%>"
+                          data-image='<%= result[1][i].bookingimage %>'
+                          data-name ="<%= result[1][i].bookingname %>"
+                          data-price = "<%= result[1][i].price %>"
+                          data-quantity = "<%= result[1][i].quantity %>"
+                          data-deliverydate="Feb 8, 2025 / 10:00 - 12:00"
+                          data-shippingmethod="Courier delivery"
+                          data-shippingaddress="<%= result[1][i].address %>"
+                          data-paymentmethod="<%= result[1][i].payment_mode %>"
+                          data-tax="12.40"
+                          data-shipping="26.50"
+                          data-total="<%=result[1][i].price%>">
+                        <span class="animate-target"><%=result[1][i].orderid%></span>
+                        </a>
+                        <ul class="list-unstyled fw-normal text-body m-0 d-md-none">
+                          <div class="truncate-text" style="max-width: 250px;">
+                            <%= result[1][i].bookingname %>
+                        </div>
+                          <li><%=result[1][i].order_date%></li>
+
+                          <li class="d-flex align-items-center">
+                            <span class="bg-info rounded-circle p-1 me-2"></span>
+                            <%=result[1][i].satus%>
+                          </li>
+                          <li class="fw-medium text-body-emphasis">Rs. <%=result[1][i].price%></li>
+                        </ul>
+                      </td>
+
+
+                      <td class="fw-medium py-3 d-none d-md-table-cell">
+                        <div class="truncate-text" style="max-width: 250px;">
+                          <%= result[1][i].bookingname %>
+                      </div>
+                        <span class="date d-none">25-02-06</span>
+                      </td>
+
+                      <td class="fw-medium py-3 d-none d-md-table-cell">
+                        <%=result[1][i].order_date%>
+                        <span class="date d-none">25-02-06</span>
+                      </td>
+                      <td class="fw-medium py-3 d-none d-md-table-cell">
+                        <span class="d-flex align-items-center">
+                          <span class="bg-info rounded-circle p-1 me-2"></span>
+                          <%=result[1][i].status.toUpperCase()%>
+                        </span>
+                      </td>
+                      <td class="fw-medium py-3 d-none d-md-table-cell">
+                        Rs. <%=result[1][i].price%>
+                        <span class="total d-none"> <%=result[1][i].price%></span>
+                      </td>
+                      <td class="py-3 pe-0">
+                        <span class="d-flex align-items-center justify-content-end position-relative gap-1 gap-sm-2 ms-n2 ms-sm-0">
+                          <span><img src="/images/<%=result[1][i].bookingimage%>" width="64" alt="Thumbnail"></span>
+                          <a class="d-inline-block animate-underline text-body-emphasis text-decoration-none py-2" 
+                          href="#orderDetails" 
+                          data-bs-toggle="offcanvas" 
+                          data-orderid="<%=result[1][i].orderid%>"
+                          data-status="<%=result[1][i].status.toUpperCase()%>"
+                          data-image='<%= result[1][i].bookingimage %>'
+                          data-name ="<%= result[1][i].bookingname %>"
+                          data-price = "<%= result[1][i].price %>"
+                          data-quantity = "<%= result[1][i].quantity %>"
+                          data-deliverydate="Feb 8, 2025 / 10:00 - 12:00"
+                          data-shippingmethod="Courier delivery"
+                          data-shippingaddress="<%= result[1][i].address %>"
+                          data-paymentmethod="<%= result[1][i].payment_mode %>"
+                          data-tax="12.40"
+                          data-shipping="26.50"
+                          data-total="<%=result[1][i].price%>">
+                            <i class="ci-chevron-right fs-lg"></i>
+                          </a>
+                        </span>
+                      </td>
+                    </tr>
+
+                    <% } %>
+
+                  </tbody>
+                </table>
+              </div>
+
+
+              <!-- Pagination -->
+           
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+    <!-- Page footer -->
+  
+
+
+    <!-- Sidebar navigation offcanvas toggle that is visible on screens < 992px wide (lg breakpoint) -->
+    <button type="button" class="fixed-bottom z-sticky w-100 btn btn-lg btn-dark border-0 border-top border-light border-opacity-10 rounded-0 pb-4 d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#accountSidebar" aria-controls="accountSidebar" data-bs-theme="light">
+      <i class="ci-sidebar fs-base me-2"></i>
+      Account menu
+    </button>
+
+
+    <!-- Back to top button -->
+    <div class="floating-buttons position-fixed top-50 end-0 z-sticky me-3 me-xl-4 pb-4">
+      <a class="btn-scroll-top btn btn-sm bg-body border-0 rounded-pill shadow animate-slide-end" href="#top">
+        Top
+        <i class="ci-arrow-right fs-base ms-1 me-n1 animate-target"></i>
+        <span class="position-absolute top-0 start-0 w-100 h-100 border rounded-pill z-0"></span>
+        <svg class="position-absolute top-0 start-0 w-100 h-100 z-1" viewBox="0 0 62 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x=".75" y=".75" width="60.5" height="30.5" rx="15.25" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"></rect>
+        </svg>
+      </a>
+      <a class="btn btn-sm btn-outline-secondary text-uppercase bg-body rounded-pill shadow animate-rotate ms-2 me-n5" href="#customizer" style="font-size: .625rem; letter-spacing: .05rem;" data-bs-toggle="offcanvas" role="button" aria-controls="customizer">
+        Customize<i class="ci-settings fs-base ms-1 me-n2 animate-target"></i>
+      </a>
+    </div>
+
+
+    <!-- Vendor scripts -->
+    <script src="/theme/assets/vendor/choices.js/choices.min.js"></script>
+    <script src="/theme/assets/vendor/list.js/list.min.js"></script>
+
+    <!-- Bootstrap + Theme scripts -->
+    <script src="/theme/assets/js/theme.min.js"></script>
+  
+
+</body>
+<!-- Mirrored from cartzilla-html.createx.studio/account-orders.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Dec 2024 06:38:32 GMT -->
+</html>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const orderLinks = document.querySelectorAll('[data-bs-toggle="offcanvas"]');
+
+  orderLinks.forEach(link => {
+    link.addEventListener('click', function () {
+      const orderId = this.getAttribute('data-orderid');
+      const status = this.getAttribute('data-status');
+      // const items = JSON.parse(this.getAttribute('data-items'));
+      const image = this.getAttribute('data-image');
+      const name = this.getAttribute('data-name');
+      const price = this.getAttribute('data-price');
+      const quantity = this.getAttribute('data-quantity');
+
+
+
+
+      const deliveryDate = this.getAttribute('data-deliverydate');
+      const shippingMethod = this.getAttribute('data-shippingmethod');
+      const shippingAddress = this.getAttribute('data-shippingaddress');
+      const paymentMethod = this.getAttribute('data-paymentmethod');
+      // const tax = this.getAttribute('data-tax');
+      const shipping = this.getAttribute('data-shipping');
+      const total = this.getAttribute('data-total');
+
+      // Update Offcanvas
+      document.getElementById('order-id').innerText = orderId;
+      document.getElementById('order-status').innerText = status;
+
+      // Populate Items
+      const orderItemsContainer = document.getElementById('order-items');
+      orderItemsContainer.innerHTML = ''; // Clear previous items
+
+   
+      // Update delivery and payment details
+      document.getElementById('delivery-date').innerText = deliveryDate;
+      // document.getElementById('shipping-method').innerText = shippingMethod;
+      document.getElementById('shipping-address').innerText = shippingAddress;
+      document.getElementById('payment-method').innerText = paymentMethod.toUpperCase();
+      // document.getElementById('tax').innerText = `$${tax}`;
+      document.getElementById('shipping').innerText = `Free`;
+      document.getElementById('order-name').innerText = name;
+      document.getElementById('order-price').innerText = `Rs. ${price}`;
+      document.getElementById('order-quantity').innerText = `QTY. ${quantity}`;
+      document.getElementById('order-image').innerHTML = `<img src='/images/${image}' width="110" alt="iPad Pro">`;
+
+
+
+
+      document.getElementById('total-price').innerText = `Rs. ${total}`;
+    });
+  });
+});
+
+</script>
