@@ -6,6 +6,7 @@ var table = 'category';
 const fs = require("fs");
 const fetch = require("node-fetch");
 const fetchCartData = require('./fetchCartData');
+const delivery = require('./delivery');
 
 
 var nodemailer = require('nodemailer');
@@ -1766,202 +1767,341 @@ router.get('/helpdesk',(req,res)=>{
 
 
 
-router.post('/order-now',(req,res)=>{
-  let body = req.body;
-// console.log('body',req.body)
-  let cartData = req.body
+// router.post('/order-now',(req,res)=>{
+//   let body = req.body;
+// // console.log('body',req.body)
+//   let cartData = req.body
 
-  console.log('CardData',cartData)
-  if(req.body.payment_mode == 'online') {
+//   console.log('CardData',cartData)
+//   if(req.body.payment_mode == 'online') {
 
-    req.session.userfirstname =  req.body.first_name;
+//     req.session.userfirstname =  req.body.first_name;
   
-    req.session.address1 = req.body.address1;
-    req.session.address2 = req.body.address2;
-    req.session.city = req.body.city;
-    req.session.state = req.body.state;
-    req.session.pincode = req.body.pincode;
-    req.session.time = req.body.time;
-    req.session.payment_mode = req.body.payment_mode;
+//     req.session.address1 = req.body.address1;
+//     req.session.address2 = req.body.address2;
+//     req.session.city = req.body.city;
+//     req.session.state = req.body.state;
+//     req.session.pincode = req.body.pincode;
+//     req.session.time = req.body.time;
+//     req.session.payment_mode = req.body.payment_mode;
    
    
-    if((+req.session.totalprice) > 500) {
-      amount = req.session.totalprice
-    }
-    else {
-     amount = (+req.session.totalprice) + 500
-    }
+//     if((+req.session.totalprice) > 500) {
+//       amount = req.session.totalprice
+//     }
+//     else {
+//      amount = (+req.session.totalprice) + 500
+//     }
 
 
-    const url = `https://rzp_live_wdTkjI7Ba4b5qN:rxR0Prlwb9Gz7HctbrpukFOe@api.razorpay.com/v1/orders/`;
-    const data = {
-      amount: amount* 100, // amount in the smallest currency unit
-      //amount:100,
-      currency: "INR",
-      payment_capture: true,
-    };
-    console.log("data", data);
-    const options = {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((resu) => {
-           res.render('open',{resu : resu.id})
-      })
+//     const url = `https://rzp_live_wdTkjI7Ba4b5qN:rxR0Prlwb9Gz7HctbrpukFOe@api.razorpay.com/v1/orders/`;
+//     const data = {
+//       amount: amount* 100, // amount in the smallest currency unit
+//       //amount:100,
+//       currency: "INR",
+//       payment_capture: true,
+//     };
+//     console.log("data", data);
+//     const options = {
+//       method: "POST",
+//       body: JSON.stringify(data),
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     };
+//     fetch(url, options)
+//       .then((res) => res.json())
+//       .then((resu) => {
+//            res.render('open',{resu : resu.id})
+//       })
 
-  }
-  else{
+//   }
+//   else{
 
 
-    console.log('CardData',cartData)
+//     console.log('CardData',cartData)
 
-       body['status'] = 'pending'
+//        body['status'] = 'pending'
         
     
-      var today = new Date();
-    var dd = today.getDate();
+//       var today = new Date();
+//     var dd = today.getDate();
     
-    var mm = today.getMonth()+1; 
-    var yyyy = today.getFullYear();
-    if(dd<10) 
-    {
-      dd='0'+dd;
-    } 
+//     var mm = today.getMonth()+1; 
+//     var yyyy = today.getFullYear();
+//     if(dd<10) 
+//     {
+//       dd='0'+dd;
+//     } 
     
-    if(mm<10) 
-    {
-      mm='0'+mm;
-    } 
-    today = yyyy+'-'+mm+'-'+dd;
-    
-    
-    body['date'] = today
+//     if(mm<10) 
+//     {
+//       mm='0'+mm;
+//     } 
+//     today = yyyy+'-'+mm+'-'+dd;
     
     
-    
-      var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var result = '';
-      for ( var i = 0; i < 12; i++ ) {
-          result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-      }
-     orderid = result;
-     req.session.orderid = orderid;
+//     body['date'] = today
     
     
-        body['address'] = req.body.address + ','  + req.body.city + ',' + req.body.pincode;
-        body['name'] = req.body.first_name  ;
+    
+//       var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//       var result = '';
+//       for ( var i = 0; i < 12; i++ ) {
+//           result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+//       }
+//      orderid = result;
+//      req.session.orderid = orderid;
     
     
-     console.log(req.body)
+//         body['address'] = req.body.address + ','  + req.body.city + ',' + req.body.pincode;
+//         body['name'] = req.body.first_name  ;
     
     
-     pool.query(`select * from cart where usernumber = '${req.session.usernumber}'`,(err,result)=>{
-         if(err) throw err;
-         else {
+//      console.log(req.body)
     
-         let data = result
     
-         for(i=0;i<result.length;i++){
-          data[i].name = req.body.name
-          data[i].date = today
-          data[i].orderid = orderid
-          data[i].status = 'pending'
-          data[i].number = req.session.usernumber
-          data[i].usernumber = req.session.usernumber
-          data[i].payment_mode = 'cash'
-          data[i].address = req.body.address
-          data[i].id = null
-          data[i].pincode = req.body.pincode
-          data[i].order_date = today
-          data[i].time = req.body.time
-          data[i].price = data[i].price
-            data[i].shipping_charges = 0
+//      pool.query(`select * from cart where usernumber = '${req.session.usernumber}'`,(err,result)=>{
+//          if(err) throw err;
+//          else {
+    
+//          let data = result
+    
+//          for(i=0;i<result.length;i++){
+//           data[i].name = req.body.name
+//           data[i].date = today
+//           data[i].orderid = orderid
+//           data[i].status = 'pending'
+//           data[i].number = req.session.usernumber
+//           data[i].usernumber = req.session.usernumber
+//           data[i].payment_mode = 'cash'
+//           data[i].address = req.body.address
+//           data[i].id = null
+//           data[i].pincode = req.body.pincode
+//           data[i].order_date = today
+//           data[i].time = req.body.time
+//           data[i].price = data[i].price
+//             data[i].shipping_charges = 0
 
-          // if((+data[i].price) > 500){
-          //   data[i].price = data[i].price
-          //   data[i].shipping_charges = 0
-          // }
-          // else{
-          // data[i].price = (+data[i].price) + 500;
-          // data[i].shipping_charges = 500
-          // }
+//           // if((+data[i].price) > 500){
+//           //   data[i].price = data[i].price
+//           //   data[i].shipping_charges = 0
+//           // }
+//           // else{
+//           // data[i].price = (+data[i].price) + 500;
+//           // data[i].shipping_charges = 500
+//           // }
     
     
-         }
+//          }
     
     
        
     
-    for(i=0;i<data.length;i++) {
-      console.log('quantity1',data[i])
+//     for(i=0;i<data.length;i++) {
+//       console.log('quantity1',data[i])
     
-    let quantity = data[i].quantity;
-    let booking_id = data[i].booking_id;
+//     let quantity = data[i].quantity;
+//     let booking_id = data[i].booking_id;
     
-     pool.query(`insert into booking set ?`,data[i],(err,result)=>{
-             if(err) throw err;
-             else {
+//      pool.query(`insert into booking set ?`,data[i],(err,result)=>{
+//              if(err) throw err;
+//              else {
         
     
-    pool.query(`update product set quantity = quantity - ${quantity} where id = '${booking_id}'`,(err,result)=>{
-     if(err) throw err;
-     else {
+//     pool.query(`update product set quantity = quantity - ${quantity} where id = '${booking_id}'`,(err,result)=>{
+//      if(err) throw err;
+//      else {
     
-     }
+//      }
     
-    })
+//     })
     
-             }
-        })
-    }
+//              }
+//         })
+//     }
     
     
       
     
     
-    pool.query(`delete from cart where usernumber = '${req.session.usernumber}'`,(err,result)=>{
-      if(err) throw err;
-      else {
-         res.redirect('/confirmation')
-      }
-    })
+//     pool.query(`delete from cart where usernumber = '${req.session.usernumber}'`,(err,result)=>{
+//       if(err) throw err;
+//       else {
+//          res.redirect('/confirmation')
+//       }
+//     })
     
     
-         }
-     })
+//          }
+//      })
 
-  }
+//   }
 
   
 
  
-})
+// })
 
+
+
+router.post('/order-now', async (req, res) => {
+  try {
+    let body = req.body;
+    console.log('Cart Data:', body);
+
+    if (req.body.payment_mode === 'online') {
+      // Handle online payment (existing logic)
+    } else {
+      // Handle cash on delivery
+      body['status'] = 'pending';
+
+      const today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+      const orderid = Math.random().toString(36).substr(2, 12); // Random 12-character order ID
+      req.session.orderid = orderid;
+
+      body['address'] = `${req.body.address}, ${req.body.city}, ${req.body.pincode}`;
+      body['name'] = req.body.first_name;
+      body['date'] = today;
+
+      // Fetch cart data and process the order
+      pool.query(`SELECT c.* , (select p.name from product p where p.id = c.booking_id) as product_name FROM cart c WHERE c.usernumber = '${req.session.ipaddress}'`, async (err, result) => {
+        if (err) throw err;
+      console.log('result fetch',result)
+        const data = result.map((item) => ({
+          // ...item,
+          name: body.name,
+          date: today,
+          orderid,
+          status: 'pending',
+          number: req.session.usernumber,
+          payment_mode: 'cash',
+          address: body.address,
+          order_date: today,
+          time: body.time,
+          price: item.price,
+          shipping_charges: 0,
+          quantity : item.quantity,
+          booking_id : item.booking_id,
+          product_name:item.product_name
+        }));
+
+
+        console.log('data comes',data)
+
+        // Insert booking and update product quantities
+        for (const orderItem of data) {
+          const { quantity, booking_id } = orderItem;
+
+          // Insert into booking table
+          await new Promise((resolve, reject) => {
+            pool.query('INSERT INTO booking SET ?', orderItem, (err) => {
+              if (err) reject(err);
+              resolve();
+            });
+          });
+
+          // Update product quantities
+          await new Promise((resolve, reject) => {
+            pool.query(
+              `UPDATE product SET quantity = quantity - ${quantity} WHERE id = '${booking_id}'`,
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              }
+            );
+          });
+        }
+
+        // Delete cart items
+        pool.query(`DELETE FROM cart WHERE usernumber = '${req.session.usernumber}'`, async (err) => {
+          if (err) throw err;
+
+          // Create a shipping order via Shiprocket
+          try {
+            const token = await delivery.authLogin();
+            console.log('token recieved',token)
+            console.log('body recieved',req.body)
+            console.log('data recieved',data)
+
+            const shippingOrderDetails = {
+              order_id: orderid,
+              order_date: today,
+              pickup_location: 'store_location',
+              billing_customer_name: req.body.first_name,
+              billing_last_name: '',
+              billing_address: req.body.address,
+              billing_address_2: '',
+              billing_city: req.body.city,
+              billing_pincode: req.body.pincode,
+              billing_state: req.body.state,
+              billing_country: 'India',
+              billing_email: req.body.email,
+              billing_phone: req.body.number,
+              shipping_is_billing: true,
+              order_items: data.map((item) => ({
+                name: item.product_name,
+                sku: item.sku || '0',
+                units: item.quantity,
+                selling_price: item.price,
+              })),
+              payment_method: 'COD',
+              shipping_charges: 0,
+              sub_total: data.reduce((sum, item) => sum + item.price * item.quantity, 0),
+              length: 10,
+              breadth: 10,
+              height: 10,
+              weight: 1.0,
+            };
+
+
+            console.log('shippingOrderDetails',shippingOrderDetails)
+
+            const shippingResponse = await delivery.createShippingOrder(shippingOrderDetails, token);
+            console.log('Shipping Order Response:', shippingResponse);
+             pool.query(`insert into shipping set ?`,shippingResponse,(err,result)=>{
+              if(err) throw err;
+              else{
+                res.redirect('/confirmation');
+
+              }
+             })
+
+
+
+          } catch (shippingError) {
+            console.error('Failed to create shipping order:', shippingError.message);
+            res.status(500).json({ success: false, error: shippingError.message });
+          }
+        });
+      });
+    }
+  } catch (error) {
+    console.error('Error handling order:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 
 
 
 router.get('/myorder',fetchCartData,(req,res)=>{
   if(req.session.usernumber){
+    // res.json(req.session.usernumber)
     req.session.page = null;
     var query = `select * from category order by id desc;`
     var query1 = `select b.* , (select p.name from product p where p.id = b.booking_id) as bookingname,
     (select p.image from product p where p.id = b.booking_id) as bookingimage,
     (select u.email from users u where u.id = b.usernumber) as usermobilenumber
 
-    from booking b where usernumber = '${req.session.usernumber}' and status!='Cancel' order by id desc;`
+    from booking b where b.number = '${req.session.usernumber}' and status!='Cancel' order by id desc;`
     var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query6+query7+query8,(err,result)=>{
       if(err) throw err;
       else res.render('myorder',{result:result,login:true,msg1:'You have not placed any orders.',msg2:`Here are the orders you've placed since your account was created`,title:'Order History',cartData:req.cartData})
-    // else res.json(req.session)
+    // else res.json(result[1])
     })
   }
   else{
@@ -2724,7 +2864,7 @@ res.redirect('/login')
 
 
 router.post('/save-address', (req, res) => {
-  let { firstname, lastname, usernumber, city, pincode, address, email } = req.body;
+  let { firstname, lastname, usernumber, city, pincode, address, email,state } = req.body;
 
   // Validate required fields
   if (!firstname || !lastname || !usernumber || !city || !pincode || !address || !email) {
@@ -2739,6 +2879,8 @@ router.post('/save-address', (req, res) => {
     city,
     pincode,
     address,
+    state,
+    email
   };
 
   // Prepare data for the users table

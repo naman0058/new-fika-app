@@ -1,158 +1,56 @@
-var express = require('express');
-var router = express.Router();
-var upload = require('./multer');
-var pool = require('./pool')
-var table = 'delievery';
+const express = require('express');
+const router = express.Router();
+const upload = require('./multer');
+const pool = require('./pool');
 const fs = require("fs");
+const axios = require('axios');
 
 
+// Define the data for authentication
+const authData = JSON.stringify({
+  email: "amitali910+dotpeapi@gmail.com",
+  password: "SGJRMphYGSE#@#3"
+});
 
-router.get('/',(req,res)=>{
-    if(req.session.adminid){
-        res.render('delivery')
-    }
-    else {
-        res.render('admin_login',{msg:'Please Login First'})
-    }
-  // res.render('category')
-    
-})
-
-
-router.post('/storeEditId',(req,res)=>{
-    req.session.editStoreId = req.body.id
-    res.send('success')
-})
-
-
-router.post('/insert',(req,res)=>{
-	let body = req.body
-    
-	pool.query(`insert into ${table} set ?`,body,(err,result)=>{
-		if(err) {
-            res.json({
-                status:500,
-                type : 'error',
-                description:err
-            })
-        }
-		else {
-            res.json({
-                status:200,
-                type : 'success',
-                description:'successfully added'
-            })
-            
-        }
-	})
-})
-
-
-
-router.get('/all',(req,res)=>{
-	pool.query(`select * from ${table} `,(err,result)=>{
-		if(err) throw err;
-        else res.json(result)
-	})
-})
-
-
-
-router.get('/delete', (req, res) => {
-    let body = req.body
-    pool.query(`delete from ${table} where id = ${req.query.id}`, (err, result) => {
-        if(err) {
-            res.json({
-                status:500,
-                type : 'error',
-                description:err
-            })
-        }
-        else {
-            res.json({
-                status:200,
-                type : 'success',
-                description:'successfully delete'
-            })
-        }
-    })
-})
-
-
-router.post('/update', (req, res) => {
-    pool.query(`update ${table} set ? where id = ?`, [req.body, req.body.id], (err, result) => {
-        if(err) {
-            res.json({
-                status:500,
-                type : 'error',
-                description:err
-            })
-        }
-        else {
-            res.json({
-                status:200,
-                type : 'success',
-                description:'successfully update'
-            })
-
-            
-        }
-    })
-})
-
-
-
-
-
-
-
-router.post('/update_image',upload.single('image'), (req, res) => {
-    let body = req.body;
-    body['image'] = req.file.filename
-
-
-    pool.query(`select image from ${table} where id = '${req.body.id}'`,(err,result)=>{
-        if(err) throw err;
-        else {
-            fs.unlinkSync(`public/images/${result[0].image}`); 
-
-
- pool.query(`update ${table} set ? where id = ?`, [req.body, req.body.id], (err, result) => {
-        if(err) {
-            res.json({
-                status:500,
-                type : 'error',
-                description:err
-            })
-        }
-        else {
-            // res.json({
-            //     status:200,
-            //     type : 'success',
-            //     description:'successfully update'
-            // })
-
-            res.redirect('/category')
-        }
-    })
-
-
-        }
-    })
-
+// Function to authenticate and retrieve the token
+async function authLogin() {
+    const config = {
+      method: 'post',
+      url: 'https://apiv2.shiprocket.in/v1/external/auth/login',
+      headers: { 'Content-Type': 'application/json' },
+      data: authData,
+    };
   
-   
-})
+    try {
+      const response = await axios(config);
+      return response.data.token; // Return the authentication token
+    } catch (error) {
+      console.error("Error during authentication:", error.message);
+      throw error;
+    }
+  }
+
+// Function to create an order
+async function createShippingOrder(orderDetails, token) {
+    const config = {
+      method: 'post',
+      url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify(orderDetails),
+    };
+  
+    try {
+      const response = await axios(config);
+      console.error("Shipping order Response Return:", response.data);
+      return response.data; // Return the Shiprocket order response
+    } catch (error) {
+      console.error("Error creating shipping order:", error.response.data);
+      throw error;
+    }
+  }
 
 
-
-
-router.get('/details',(req,res)=>{
-    pool.query(`select b.* , (select p.name from product p where p.id = b.booking_id) as productname from booking b where b.assigned_number = '${req.query.number}'`,(err,result)=>{
-        if(err) throw err;
-        else res.render('delivery_details',{result})
-    })
-})
-
-
-module.exports = router;
+  module.exports = { createShippingOrder, authLogin };

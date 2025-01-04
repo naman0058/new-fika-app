@@ -49,7 +49,7 @@
                   <div class="accordion-collapse collapse d-lg-block" id="shippingAddress" aria-labelledby="shippingAddressHeading" data-bs-parent="#checkout">
                     <ul class="accordion-body list-unstyled fs-sm p-0 pt-3 pt-md-4 mb-0">
                       <li><%=result[8][0].firstname%> <%=result[8][0].lastname%></li>
-                      <li><%=result[5][0].email%></li>
+                      <li><%=result[8][0].email%></li>
                       <li><%=result[8][0].usernumber%></li>
                       <li><%=result[8][0].city%>, <%=result[8][0].pincode%></li>
                       <li><%=result[8][0].address%></li>
@@ -173,7 +173,11 @@
             <input type="hidden" name="address" value="<%=result[8][0].address%>">
             <input type="hidden" name="city" value=" <%=result[8][0].city%>">
             <input type="hidden" name="pincode" value="<%=result[8][0].pincode%>">
-            <input type="hidden" name="time" value="12:00 PM">
+            <input type="hidden" name="last_name" value="<%=result[8][0].lastname%>">
+            <input type="hidden" name="state" value="<%=result[8][0].state%>">
+            <input type="hidden" name="email" value="<%=result[8][0].email%>">
+            <input type="hidden" name="number" value="<%=result[8][0].usernumber%>">
+
           </form>
           
           <script>
