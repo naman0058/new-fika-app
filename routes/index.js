@@ -6,7 +6,7 @@ var table = 'category';
 const fs = require("fs");
 const fetch = require("node-fetch");
 const fetchCartData = require('./fetchCartData');
-// const delivery = require('./delivery');
+const deliveryApi = require('./delivery');
 
 
 var nodemailer = require('nodemailer');
@@ -2019,7 +2019,7 @@ router.post('/order-now', async (req, res) => {
 
           // Create a shipping order via Shiprocket
           try {
-            const token = await delivery.authLogin();
+            const token = await deliveryApi.shippingAuthLogin();
             console.log('token recieved',token)
             console.log('body recieved',req.body)
             console.log('data recieved',data)
@@ -2057,7 +2057,7 @@ router.post('/order-now', async (req, res) => {
 
             console.log('shippingOrderDetails',shippingOrderDetails)
 
-            const shippingResponse = await delivery.createShippingOrder(shippingOrderDetails, token);
+            const shippingResponse = await deliveryApi.createShippingOrder(shippingOrderDetails, token);
             console.log('Shipping Order Response:', shippingResponse);
              pool.query(`insert into shipping set ?`,shippingResponse,(err,result)=>{
               if(err) throw err;

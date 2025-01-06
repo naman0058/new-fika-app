@@ -13,7 +13,7 @@ const authData = JSON.stringify({
 });
 
 // Function to authenticate and retrieve the token
-async function authLogin() {
+async function shippingAuthLogin() {
     const config = {
       method: 'post',
       url: 'https://apiv2.shiprocket.in/v1/external/auth/login',
@@ -53,4 +53,7 @@ async function createShippingOrder(orderDetails, token) {
   }
 
 
-  module.exports = { createShippingOrder, authLogin };
+  module.exports =
+   { createShippingOrder,
+    shippingAuthLogin 
+    }
