@@ -76,19 +76,14 @@
                     }" alt="Preview">
                   </div>
                 </div>
+
+
+
+
+                <% for(i=0;i<result[8].length;i++) { %>
                 <div class="swiper-slide">
                   <div class="ratio ratio-1x1">
-                    <img src="/images/<%=result[1][0].image1%>" data-zoom="/images/<%=result[1][0].image1%>" data-zoom-options="{
-                      &quot;paneSelector&quot;: &quot;#zoomPane&quot;,
-                      &quot;inlinePane&quot;: 768,
-                      &quot;hoverDelay&quot;: 500,
-                      &quot;touchDisable&quot;: true
-                    }" alt="Preview">
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="ratio ratio-1x1">
-                    <img src="/images/<%=result[1][0].image2%>" data-zoom="/images/<%=result[1][0].image2%>" data-zoom-options="{
+                    <img src="/images/<%=result[8][i].image%>" data-zoom="/images/<%=result[8][i].image%>" data-zoom-options="{
                       &quot;paneSelector&quot;: &quot;#zoomPane&quot;,
                       &quot;inlinePane&quot;: 768,
                       &quot;hoverDelay&quot;: 500,
@@ -97,16 +92,10 @@
                   </div>
                 </div>
 
-                <div class="swiper-slide">
-                  <div class="ratio ratio-1x1">
-                    <img src="/images/<%=result[1][0].image3%>" data-zoom="/images/<%=result[1][0].image3%>" data-zoom-options="{
-                      &quot;paneSelector&quot;: &quot;#zoomPane&quot;,
-                      &quot;inlinePane&quot;: 768,
-                      &quot;hoverDelay&quot;: 500,
-                      &quot;touchDisable&quot;: true
-                    }" alt="Preview">
-                  </div>
-                </div>
+                <% } %>
+
+
+                
               
                
               </div>
@@ -159,21 +148,17 @@
                     <img src="/images/<%=result[1][0].image%>" class="swiper-thumb-img" alt="Thumbnail">
                   </div>
                 </div>
+                
+                <% for(i=0;i<result[8].length;i++) { %>
+                
                 <div class="swiper-slide swiper-thumb">
                   <div class="ratio ratio-1x1" style="max-width: 94px">
-                    <img src="/images/<%=result[1][0].image1%>" class="swiper-thumb-img" alt="Thumbnail">
+                    <img src="/images/<%=result[8][i].image%>" class="swiper-thumb-img" alt="Thumbnail">
                   </div>
                 </div>
-                <div class="swiper-slide swiper-thumb">
-                  <div class="ratio ratio-1x1" style="max-width: 94px">
-                    <img src="/images/<%=result[1][0].image2%>" class="swiper-thumb-img" alt="Thumbnail">
-                  </div>
-                </div>
-                <div class="swiper-slide swiper-thumb">
-                  <div class="ratio ratio-1x1" style="max-width: 94px">
-                    <img src="/images/<%=result[1][0].image3%>" class="swiper-thumb-img" alt="Thumbnail">
-                  </div>
-                </div>
+
+                <% } %>
+              
                 <!-- <div class="swiper-slide swiper-thumb">
                   <div class="ratio ratio-1x1" style="max-width: 94px">
                     <img src="/images/<%=result[1][0].image4%>" class="swiper-thumb-img" alt="Thumbnail">

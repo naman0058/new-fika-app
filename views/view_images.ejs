@@ -15,36 +15,28 @@
                     <table id="myTable" class="table table-bordered table-striped mb-0">
                     <thead>
                     <tr>
-                    
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>Address</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                  <th>Status</th>
-                    <th>Date</th>
+                    <th>Image</th>
+                    <th>Update Image</th>
                     </tr>
                     </thead>
                     <tbody>
                     
 
 
-                        <% for(i=0;i<result.length;i++){ %>
-                  <tr>
-                    <td><%=result[i].name%></td>
-                    <td><%=result[i].number%></td>
-                    <td><%=result[i].address%>
-</td>
-                    <td><%=result[i].productname%></td>
-                    <td><%=result[i].quantity%></td>
-                    <td><%=result[i].price%></td>
-                    <td><%=result[i].status%></td>
-                    <td><%=result[i].date%></td>
-                  
-                    </tr>
-
-<% } %>
+                        <% for (i = 0; i < result.length; i++) { %>
+                            <tr>
+                              <td>
+                                <img src="/images/<%= result[i].image %>" style="width: 150px; margin-bottom: 20px; margin-top: 20px;">
+                              </td>
+                              <td>
+                                <form class="updateImageForm" enctype="multipart/form-data">
+                                  <input type="hidden" name="id" value="<%= result[i].id %>">
+                                  <input type="file" name="image" class="imageInput" onchange="updateImage(this)">
+                                </form>
+                              </td>
+                            </tr>
+                            <% } %>
+                            
 
                     </tbody>
                     </table>
@@ -136,7 +128,31 @@
 
 
 
-
+<script>
+    function updateImage(input) {
+      const form = input.closest('.updateImageForm'); // Get the form element
+      const formData = new FormData(form); // Create FormData object
+  
+      // Make an AJAX request to upload the image
+      $.ajax({
+        url: '/purchase-product/update-other-image', // Replace with your API endpoint
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          alert('Image updated successfully!');
+          // Optionally reload the image
+        window.location.reload()
+        },
+        error: function(xhr, status, error) {
+          console.error('Error updating image:', error);
+          alert('Failed to update image. Please try again.');
+        }
+      });
+    }
+  </script>
+  
 
 
 

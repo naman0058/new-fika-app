@@ -128,13 +128,8 @@ console.log(req.session.usernumber)
 
 router.get('/order-history',(req,res)=>{
   pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname,
-  (select u.email from users u where u.id = b.usernumber) as usermobilenumber,
-  (select a.address1 from address a where a.id = b.address ) as useraddress1,
-  (select a.address2 from address a where a.id = b.address ) as useraddress2,
-  (select a.city from address a where a.id = b.address ) as usercity,
-  (select a.postcode from address a where a.id = b.address ) as userpostcode,
-  (select a.id_state from address a where a.id = b.address ) as userstate,
-  (select a.id_country from address a where a.id = b.address ) as usercountry
+  (select u.email from users u where u.id = b.usernumber) as usermobilenumber
+ 
   
   from booking b where b.status =  'completed' order by id desc;`,(err,result)=>{
     if(err) throw err;
@@ -147,13 +142,8 @@ router.get('/order-history',(req,res)=>{
 
 router.get('/running-order',(req,res)=>{
   pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname ,
-  (select u.email from users u where u.id = b.usernumber) as usermobilenumber,
-  (select a.address1 from address a where a.id = b.address ) as useraddress1,
-  (select a.address2 from address a where a.id = b.address ) as useraddress2,
-  (select a.city from address a where a.id = b.address ) as usercity,
-  (select a.postcode from address a where a.id = b.address ) as userpostcode,
-  (select a.id_state from address a where a.id = b.address ) as userstate,
-  (select a.id_country from address a where a.id = b.address ) as usercountry
+  (select u.email from users u where u.id = b.usernumber) as usermobilenumber
+ 
   
   from booking b where b.status != 'completed' and b.status != 'Cancel' order by id desc;`,(err,result)=>{
     if(err) throw err;
@@ -164,13 +154,7 @@ router.get('/running-order',(req,res)=>{
 
 router.get('/cancel-order',(req,res)=>{
   pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname ,
-  (select u.email from users u where u.id = b.usernumber) as usermobilenumber,
-  (select a.address1 from address a where a.id = b.address ) as useraddress1,
-  (select a.address2 from address a where a.id = b.address ) as useraddress2,
-  (select a.city from address a where a.id = b.address ) as usercity,
-  (select a.postcode from address a where a.id = b.address ) as userpostcode,
-  (select a.id_state from address a where a.id = b.address ) as userstate,
-  (select a.id_country from address a where a.id = b.address ) as usercountry
+  (select u.email from users u where u.id = b.usernumber) as usermobilenumber
   
   from booking b where b.status = 'Cancel' order by id desc `,(err,result)=>{
     if(err) throw err;
@@ -435,7 +419,8 @@ router.get('/product',fetchCartData,(req,res)=>{
      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
      var query10 = `select * from product_manage where productid = '${req.query.id}';`
-      pool.query(query+query1+query2+query6+query7+query8+query9+query10,(err,result)=>{
+     var query11 = `select * from productimages where productid = '${req.query.id}';`
+      pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
         if(err) throw err;
         else res.render('view-product', { title: 'Express',login:true, result : result,sizerequest:req.query.size,title:result[1][0].name,cartData:req.cartData});
       })
@@ -467,8 +452,10 @@ router.get('/product',fetchCartData,(req,res)=>{
      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
      var query9 = `select * from wishlist_name where usernumber = '${req.session.ipaddress}';`
      var query10 = `select * from product_manage where productid = '${req.query.id}';`
+     var query11 = `select * from productimages where productid = '${req.query.id}';`
 
-      pool.query(query+query1+query2+query6+query7+query8+query9+query10,(err,result)=>{
+
+      pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
         if(err) throw err;
          else res.render('view-product', { title: 'Express',login:false , result : result,sizerequest:req.query.size,title:result[1][0].name,cartData:req.cartData});
   // else res.json(result)
@@ -3272,7 +3259,7 @@ router.get('/invoice',(req,res)=>{
     (select p.name from product p where p.id = c.booking_id) as bookingname,
     (select p.image from product p where p.id = c.booking_id) as bookingimage,
     (select u.email from users u where u.id = c.usernumber) as usermobilenumber,
-    (select a.address1 from address a where a.id = c.address ) as useraddress1,
+    (select a.address from address a where a.id = c.address ) as useraddress1,
     (select a.address2 from address a where a.id = c.address ) as useraddress2,
     (select a.city from address a where a.id = c.address ) as usercity,
     (select a.postcode from address a where a.id = c.address ) as userpostcode,
@@ -3613,8 +3600,7 @@ router.get('/celebrity',(req,res)=>{
     router.get('/sales/report',(req,res)=>{
       pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname,
       (select u.email from users u where u.id = b.usernumber) as usermobilenumber,
-      (select a.address1 from address a where a.id = b.address ) as useraddress1,
-  (select a.address2 from address a where a.id = b.address ) as useraddress2,
+      (select a.address from address a where a.id = b.address ) as useraddress1,
   (select a.city from address a where a.id = b.address ) as usercity,
   (select a.postcode from address a where a.id = b.address ) as userpostcode,
   (select a.id_state from address a where a.id = b.address ) as userstate,
