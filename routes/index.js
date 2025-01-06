@@ -6,7 +6,7 @@ var table = 'category';
 const fs = require("fs");
 const fetch = require("node-fetch");
 const fetchCartData = require('./fetchCartData');
-const delivery = require('./delivery');
+// const delivery = require('./delivery');
 
 
 var nodemailer = require('nodemailer');
