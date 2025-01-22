@@ -112,7 +112,8 @@ table+=`<tr>
 </td>
 <td>
 <a href="#!" class="btn btn-info btn-sm edits" id="${item.id}"><i class="feather icon-edit"></i>&nbsp;Edit </a>
-<a href="#!" class="btn btn-info btn-sm updateimage"  id="${item.id}"><i class="feather icon-edit"></i>&nbsp;Edit Image </a>
+<a href="#!" class="btn btn-info btn-sm updateimage"  id="${item.id}"><i class="feather icon-edit"></i>&nbsp;Main Image </a>
+<a href="/purchase-product/view-images?id=${item.id}" class="btn btn-info btn-sm"><i class="feather icon-edit"></i>&nbsp;Edit Image </a>
 <a href="#!" class="btn btn-danger btn-sm deleted" id="${item.id}"><i class="feather icon-trash-2"></i>&nbsp;Delete </a>
 </td>
 
