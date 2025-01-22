@@ -1,7 +1,7 @@
 
 
 
-<%- include ('./otherheader.ejs') %>
+<%- include ('./navbar.ejs') %>
       
         
 <aside id="notifications">
@@ -16,26 +16,7 @@
        
         <nav data-depth="2" class="breadcrumb hidden-sm-down">
   <div class="container container-large">
-    <ol itemscope itemtype="http://schema.org/BreadcrumbList">
-      
-                  
-            <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-              <a itemprop="item" href="/">
-                <span itemprop="name">Home</span>
-              </a>
-              <meta itemprop="position" content="1">
-            </li>
-          
-                  
-            <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-              <a itemprop="item" href="#">
-                <span itemprop="name"> <%=title%></span>
-              </a>
-              <meta itemprop="position" content="2">
-            </li>
-          
-              
-    </ol>
+   
   </div>
 </nav>      
       
@@ -69,7 +50,6 @@
           <section id="content" class="page-content page-cms page-cms-4">
 
     
-            <div class="offset-md-3 col-md-6 text-center"><video width="300" height="150" class="video" controls="" loop autoplay muted=""><source src="/images/<%=result[6][0].image%>" type="video/mp4"></source><source src="/images/<%=result[6][0].image%>" type="video/ogg"></source></video></div>
       <div class="offset-md-2 col-md-8 mt-3">
         <div id="result"></div>
       </div>
@@ -118,7 +98,7 @@
                   </div>
               	
       </section>
-      <%- include ('./indexfooter.ejs') %> 
+      <%- include ('./footer1.ejs') %> 
 
 
       <script>
