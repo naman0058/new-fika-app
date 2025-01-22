@@ -33,7 +33,7 @@ console.log(req.session.usernumber)
  if(req.session.usernumber){
   var query1 = `select * from category;`
   var query2 = `select * from banner where type = 'Front Banner' order by id desc;`
-  var query3 = `select * from users where id = '${req.session.usernumber}';`
+  var query3 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query5 = `select p.* ,
   (select m.net_amount from product_manage m where m.productid = p.id) as net_amount,
   (select m.quantity from product_manage m where m.productid = p.id) as quantity
@@ -202,7 +202,7 @@ if(req.session.usernumber){
 
   from product p where p.categoryid = '${req.query.id}' and (select m.net_amount from product_manage m where m.productid = p.id and m.sizeid = 'S') is not null;`
   var query2 = `select * from category where id = '${req.query.id}';`
-  var query6 = `select * from users where id = '${req.session.usernumber}';`
+  var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -255,7 +255,7 @@ router.get('/shop/all-collections',(req,res)=>{
     
    
     var query2 = `select * from category where id = '${req.query.id}';`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -310,7 +310,7 @@ router.get('/shop/all-collections',(req,res)=>{
      
  
       var query2 = `select * from category where id = '${req.query.id}';`
-      var query6 = `select * from users where id = '${req.session.usernumber}';`
+      var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -414,7 +414,7 @@ router.get('/product',fetchCartData,(req,res)=>{
 
       from product p where p.categoryid = '${categoryid}' and p.id!= '${req.query.id}' and (select m.net_amount from product_manage m where m.productid = p.id) is not null order by id limit 8;`
      
-     var query6 = `select * from users where id = '${req.session.usernumber}';`
+     var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
      var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -909,7 +909,7 @@ router.get('/mycart',fetchCartData,(req,res)=>{
      from cart c where c.usernumber = '${req.session.usernumber}';`
    var query2 = `select sum(price) as totalprice from cart where usernumber = '${req.session.usernumber}';`   
    var query3 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`   
-   var query6 = `select * from users where id = '${req.session.usernumber}';`
+   var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
    var query7 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
    var query8 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`           
 
@@ -1376,7 +1376,7 @@ router.get('/address',(req,res)=>{
  var query2 = `select sum(price) as totalprice from cart where usernumber = '${req.session.usernumber}';`              
  var query3 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';` 
  var query4 = `select * from address where usernumber = '${req.session.usernumber}';` 
- var query5 = `select * from users where id = '${req.session.usernumber}';`
+ var query5 = `select * from users where usernumber = '${req.session.usernumber}';`
 
  var query7 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
  var query8 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
@@ -1507,7 +1507,7 @@ var query1 = `select c.* ,
 var query2 = `select sum(price) as totalprice from cart where usernumber = '${req.session.usernumber}';`              
 var query3 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';` 
 var query4 = `select * from address where usernumber = '${req.session.usernumber}';` 
-var query5 = `select * from users where id = '${req.session.usernumber}';`
+var query5 = `select * from users where usernumber = '${req.session.usernumber}';`
 var query7 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
 var query8 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
 var query9 = `select charges from country where name = (select id_country from address where id = '${req.session.address_id}') and from_Weight < ${totalweight} and to_weight >  ${totalweight}; `
@@ -1569,7 +1569,7 @@ router.get('/size-chart',(req,res)=>{
 
     var query1 = `select * from website_customize where name = 'about';`
     var query2 = `select * from website_customize where name = 'about';`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
@@ -1596,9 +1596,9 @@ router.get('/size-chart',(req,res)=>{
 router.get('/wishlist',(req,res)=>{
   console.log(req.session.usernumber)
   var query = `select * from category order by id desc;`
-  var query1 = `select * from users where id = '${req.session.usernumber}';`
+  var query1 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query2 = `select * from website_customize where name = 'about';`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}' order by id desc;`
@@ -1667,7 +1667,7 @@ today = mm + '/' + dd + '/' + yyyy;
 
 router.get('/identity',(req,res)=>{
   var query = `select * from category order by id desc;`
-  var query1 = `select * from users where id = '${req.session.usernumber}';`
+  var query1 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
   var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
   if(req.session.usernumber){
@@ -1697,7 +1697,7 @@ router.post('/identity/update',(req,res)=>{
     }
     else {
       var query = `select * from category order by id desc;`
-  var query1 = `select * from users where id = '${req.session.usernumber}';`
+  var query1 = `select * from users where usernumber = '${req.session.usernumber}';`
   
 pool.query(query+query1,(err,result)=>{
   if(err) throw err;
@@ -1713,9 +1713,9 @@ pool.query(query+query1,(err,result)=>{
 
 router.get('/alert',(req,res)=>{
   var query = `select * from category order by id desc;`
-  var query1 = `select * from users where id = '${req.session.usernumber}';`
+  var query1 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query2 = `select * from website_customize where name = 'about';`
-  var query6 = `select * from users where id = '${req.session.usernumber}';`
+  var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
   var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
   var query9 = `select * from alert where usernumber = '${req.session.usernumber}' order by id desc limit 20;`
@@ -1734,9 +1734,9 @@ router.get('/alert',(req,res)=>{
 
 router.get('/helpdesk',(req,res)=>{
   var query = `select * from category order by id desc;`
-  var query1 = `select * from users where id = '${req.session.usernumber}';`
+  var query1 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query2 = `select * from website_customize where name = 'about';`
-  var query6 = `select * from users where id = '${req.session.usernumber}';`
+  var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
   var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
   var query9 = `select * from helpdesk where usernumber = '${req.session.usernumber}' order by id desc limit 7;`
@@ -2108,7 +2108,7 @@ router.get('/credit-slip',(req,res)=>{
     (select u.email from users u where u.id = b.usernumber) as usermobilenumber
 
     from booking b where usernumber = '${req.session.usernumber}' and status = 'Cancel'  order by id desc;`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query6+query7+query8,(err,result)=>{
@@ -2145,7 +2145,7 @@ router.get('/myorder/cancel',(req,res)=>{
 //   var query1 = `select * from product where keywords Like '%${req.query.search}%' order by quantity desc;`
 //    var query2 = `select * from category order by id desc;`
 
-//   var query6 = `select * from users where id = '${req.session.usernumber}';`
+//   var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
 //     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
 //     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
 //     var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -2195,7 +2195,7 @@ router.get('/search',(req,res)=>{
   
     
     var query2 = `select * from product where keywords Like '%${req.query.search_query}%';`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -2438,13 +2438,13 @@ router.post('/myaccount-update', (req, res) => {
 
 
 
-router.get('/about',(req,res)=>{
+router.get('/about',fetchCartData,(req,res)=>{
   if(req.session.usernumber) {
     var query = `select * from category order by id desc;`
     var query1 = `select * from website_customize where name = 'about';`
     var query2 = `select * from website_customize where name = 'about';`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     var query10 = `select * from banner where type='About Video' order by id desc limit 1;`
@@ -2452,7 +2452,7 @@ router.get('/about',(req,res)=>{
     pool.query(query+query1+query2+query6+query7+query8+query10,(err,result)=>{
       if(err) throw err;
      
-      else res.render('website_customize',{result,login:true,msg:'about',title:'About Us'})
+      else res.render('website_customize',{result,login:true,msg:'about',title:'About Us',cartData:req.cartData})
     })
   }
   else{
@@ -2460,14 +2460,14 @@ router.get('/about',(req,res)=>{
     var query1 = `select * from website_customize where name = 'about' ;`
     var query2 = `select * from website_customize where name = 'about';`
 
-    var query6 = `select * from users where id = '84';`
+    var query6 = `select * from users where usernumber = '84';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
     var query10 = `select * from banner where type='About Video' order by id desc limit 1;`
 
     pool.query(query+query1+query2+query6+query7+query8+query10,(err,result)=>{
       if(err) throw err;
-       else res.render('website_customize',{result,login:false,msg:'about',title:'About Us'})
+       else res.render('website_customize',{result,login:false,msg:'about',title:'About Us',cartData:req.cartData})
       // else res.json(result)
     })
   }
@@ -2481,7 +2481,7 @@ router.get('/art-elements',(req,res)=>{
     var query1 = `select * from website_customize where name = 'art_elements';`
     var query2 = `select * from website_customize where name = 'about';`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
@@ -2551,19 +2551,19 @@ router.get('/celebrity-description',(req,res)=>{
 
 
 
-router.get('/privacy-policy',(req,res)=>{
+router.get('/privacy-policy',fetchCartData,(req,res)=>{
   if(req.session.usernumber) {
     var query = `select * from category order by id desc;`
     var query1 = `select * from website_customize where name = 'pp';`
     var query2 = `select * from website_customize where name = 'about';`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
       if(err) throw err;
      
-      else res.render('website_customize',{result,login:true,msg:'pp',title:'Privacy Ploicy'})
+      else res.render('website_customize',{result,login:true,msg:'pp',title:'Privacy Ploicy',cartData:req.cartData})
     })
   }
   else{
@@ -2577,7 +2577,7 @@ router.get('/privacy-policy',(req,res)=>{
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
       if(err) throw err;
-      else res.render('website_customize',{result,login:false,msg:'pp',title:'Privacy Ploicy'})
+      else res.render('website_customize',{result,login:false,msg:'pp',title:'Privacy Ploicy',cartData:req.cartData})
     })
   }
 })
@@ -2585,19 +2585,19 @@ router.get('/privacy-policy',(req,res)=>{
 
 
 
-router.get('/terms-and-conditions',(req,res)=>{
+router.get('/terms-and-conditions',fetchCartData,(req,res)=>{
   if(req.session.usernumber) {
     var query = `select * from category order by id desc;`
     var query1 = `select * from website_customize where name = 'tc';`
     var query2 = `select * from website_customize where name = 'about';`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
       if(err) throw err;
      
-      else res.render('website_customize',{result,login:true,msg:'tc',title:'Terms & Conditions'})
+      else res.render('website_customize',{result,login:true,msg:'tc',title:'Terms & Conditions',cartData:req.cartData})
     })
   }
   else{
@@ -2611,7 +2611,7 @@ router.get('/terms-and-conditions',(req,res)=>{
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
       if(err) throw err;
-      else res.render('website_customize',{result,login:false,msg:'tc',title:'Terms & Conditions'})
+      else res.render('website_customize',{result,login:false,msg:'tc',title:'Terms & Conditions',cartData:req.cartData})
     })
   }
 })
@@ -2623,19 +2623,19 @@ router.get('/terms-and-conditions',(req,res)=>{
 
 
 
-router.get('/refund-policy',(req,res)=>{
+router.get('/refund-policy',fetchCartData,(req,res)=>{
   if(req.session.usernumber) {
     var query = `select * from category order by id desc;`
     var query1 = `select * from website_customize where name = 'rp';`
     var query2 = `select * from website_customize where name = 'about';`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
       if(err) throw err;
      
-      else res.render('website_customize',{result,login:true,msg:'rp',title:'Shipping & Refund Policy'})
+      else res.render('website_customize',{result,login:true,msg:'rp',title:'Shipping & Replacement Policy',cartData:req.cartData})
     })
   }
   else{
@@ -2649,7 +2649,7 @@ router.get('/refund-policy',(req,res)=>{
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
       if(err) throw err;
-      else res.render('website_customize',{result,login:false,msg:'rp',title:'Refund Policy'})
+      else res.render('website_customize',{result,login:false,msg:'rp',title:'Shipping & Replacement Policy',cartData:req.cartData})
     })
   }
 })
@@ -2988,8 +2988,8 @@ router.get('/delete-myaddress',(req,res)=>{
 router.get('/new-address',(req,res)=>{
   if(req.session.usernumber){
   var query = `select * from category order by id desc;`
-  var query1 = `select * from users where id = '${req.session.usernumber}';`
-  var query6 = `select * from users where id = '${req.session.usernumber}';`
+  var query1 = `select * from users where usernumber = '${req.session.usernumber}';`
+  var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
   pool.query(query+query1+query6+query7+query8,(err,result)=>{
@@ -3064,7 +3064,7 @@ router.get('/edit-address',(req,res)=>{
 router.get('/update-address',(req,res)=>{
   var query = `select * from category order by id desc;`
   var query1 = `select * from address where id = '${req.query.id}';`
-  var query6 = `select * from users where id = '${req.session.usernumber}';`
+  var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
   pool.query(query+query1+query6+query7+query8,(err,result)=>{
@@ -3133,9 +3133,9 @@ router.post('/contact-us',(req,res)=>{
       if(req.session.usernumber){
         var query = `select * from category order by id desc;`
         var query1 = `select * from category;`
-        var query5 = `select * from users where id = '${req.session.usernumber}';`
+        var query5 = `select * from users where usernumber = '${req.session.usernumber}';`
     
-        var query6 = `select * from users where id = '${req.session.usernumber}';`
+        var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
         var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
         var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
         pool.query(query+query1+query5+query6+query7+query8,(err,result)=>{
@@ -3160,9 +3160,9 @@ router.get('/contactus',(req,res)=>{
   if(req.session.usernumber){
     var query = `select * from category order by id desc;`
     var query1 = `select * from category;`
-    var query5 = `select * from users where id = '${req.session.usernumber}';`
+    var query5 = `select * from users where usernumber = '${req.session.usernumber}';`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query5+query6+query7+query8,(err,result)=>{
@@ -3273,7 +3273,7 @@ router.get('/invoice',(req,res)=>{
 
 
     var query2 = `select * from category where id = '${req.query.id}';`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -3299,7 +3299,7 @@ router.get('/confirmation',fetchCartData,(req,res)=>{
     var query = `select * from category order by id desc;`
     var query1 = `select * from booking where usernumber = '${req.session.usernumber}' order by id desc limit 1 ;`
     var query2 = `select * from category where id = '${req.query.id}';`
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -3385,7 +3385,7 @@ var query = `select * from category order by id desc;`
   var query1 = `select * from website_customize where name = 'pp';`
   var query2 = `select * from users where usernumber = '${req.session.usernumber}';`
 
-  var query6 = `select * from users where id = '${req.session.usernumber}';`
+  var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
   var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
 
@@ -3446,7 +3446,7 @@ router.get('/celebrity',(req,res)=>{
     var query1 = `select * from photoshot order by id desc;`
     var query2 = `select * from photoshot;`
 
-    var query6 = `select * from users where id = '${req.session.usernumber}';`
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -3501,7 +3501,7 @@ router.get('/celebrity',(req,res)=>{
           var query = `select * from category order by id desc;`
           var query1 = `select p.* from photoshot p where p.id = '${req.query.id}';`
          var query2 = `select * from photoshot p where p.id!= '${req.query.id}';`
-         var query6 = `select * from users where id = '${req.session.usernumber}';`
+         var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
          var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
          var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
          var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -3544,7 +3544,7 @@ router.get('/celebrity',(req,res)=>{
         var query = `select * from category order by id desc;`
         var query1 = `select * from blog order by id desc;`
         var query2 = `select * from category where id = '${req.query.id}';`
-        var query6 = `select * from users where id = '${req.session.usernumber}';`
+        var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
           var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
           var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
           var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -3710,7 +3710,7 @@ if(req.file){
       var query = `select * from category order by id desc;`
       var query1 = `select * from helpdesk where ticket_number = '${req.query.id}';`
       var query2 = `select * from replied where helpdeskid = '${req.query.id}' order by id desc;`
-      var query6 = `select * from users where id = '${req.session.usernumber}';`
+      var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
         var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
         var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
         var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -3856,7 +3856,7 @@ else if(req.query.filter=='Best Sellers'){
    
      
       var query2 = `select * from category where id = '${req.query.id}';`
-      var query6 = `select * from users where id = '${req.session.usernumber}';`
+      var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
@@ -4191,5 +4191,14 @@ router.post('/save-myaddress',(req,res)=>{
     else res.redirect('/myaddress?msg=Saved Successfully')
   })
 })
+
+
+
+
+
+// Payment Gateway Pages
+
+
+
 
 module.exports = router;
