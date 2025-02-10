@@ -66,11 +66,26 @@
                   <h2 class="h5 mb-0">Payment</h2>
                   <div class="mb-4" id="paymentMethod" role="list">
 
+
+
+
+                    <div class="mt-4">
+                      <div class="form-check mb-0" role="listitem" data-bs-toggle="collapse" data-bs-target="#googlepay" aria-expanded="false" aria-controls="googlepay">
+                        <label class="form-check-label d-flex align-items-center text-dark-emphasis fw-semibold">
+                          <input type="radio" value="online" class="form-check-input fs-base me-2 me-sm-3" name="payment_mode" checked="">
+                          Pay Online
+                          <img src="/theme/assets//img/payment-methods/google-icon.svg" class="ms-3" width="20" alt="Pay Online" >
+                        </label>
+                      </div>
+                      <div class="collapse" id="googlepay" data-bs-parent="#paymentMethod"></div>
+                    </div>
+
+
                     <!-- Cash on delivery -->
                     <div class="mt-4">
                       <div class="form-check mb-0" role="listitem" data-bs-toggle="collapse" data-bs-target="#cash" aria-expanded="false" aria-controls="cash">
                         <label class="form-check-label w-100 text-dark-emphasis fw-semibold">
-                          <input type="radio" class="form-check-input fs-base me-2 me-sm-3" name="payment-method" checked="">
+                          <input type="radio" value="cod" class="form-check-input fs-base me-2 me-sm-3" name="payment_mode">
                           Cash on delivery
                         </label>
                       </div>
@@ -82,62 +97,10 @@
                       </div>
                     </div>
 
-                    <!-- Credit card -->
-                    <div class="mt-4">
-                      <div class="form-check mb-0" role="listitem" data-bs-toggle="collapse" data-bs-target="#card" aria-expanded="true" aria-controls="card">
-                        <label class="form-check-label d-flex align-items-center text-dark-emphasis fw-semibold">
-                          <input type="radio" class="form-check-input fs-base me-2 me-sm-3" name="payment-method">
-                          Credit or debit card
-                          <span class="d-none d-sm-flex gap-2 ms-3">
-                            <img src="/theme/assets//img/payment-methods/amex.svg" class="d-block bg-info rounded-1" width="36" alt="Amex">
-                            <img src="/theme/assets//img/payment-methods/visa-light-mode.svg" class="d-none-dark" width="36" alt="Visa">
-                            <img src="/theme/assets//img/payment-methods/visa-dark-mode.svg" class="d-none d-block-dark" width="36" alt="Visa">
-                            <img src="/theme/assets//img/payment-methods/mastercard.svg" width="36" alt="Mastercard">
-                            <img src="/theme/assets//img/payment-methods/maestro.svg" width="36" alt="Maestro">
-                          </span>
-                        </label>
-                      </div>
-                      <div class="collapse show" id="card" data-bs-parent="#paymentMethod">
-                        <form class="needs-validation pt-4 pb-2 ps-3 ms-2 ms-sm-3" novalidate="">
-                          <div class="position-relative mb-3 mb-sm-4" data-input-format="{&quot;creditCard&quot;: true}">
-                            <input type="text" class="form-control form-control-lg form-icon-end" placeholder="Card number" required="">
-                            <span class="position-absolute d-flex top-50 end-0 translate-middle-y fs-5 text-body-tertiary me-3" data-card-icon=""></span>
-                          </div>
-                          <div class="row row-cols-1 row-cols-sm-2 g-3 g-sm-4">
-                            <div class="col">
-                              <input type="text" class="form-control form-control-lg" data-input-format="{&quot;date&quot;: true, &quot;datePattern&quot;: [&quot;m&quot;, &quot;y&quot;]}" placeholder="MM/YY">
-                            </div>
-                            <div class="col">
-                              <input type="text" class="form-control form-control-lg" maxlength="4" data-input-format="{&quot;numeral&quot;: true, &quot;numeralPositiveOnly&quot;: true, &quot;numeralThousandsGroupStyle&quot;: &quot;none&quot;}" placeholder="CVC">
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-
-                    <!-- PayPal -->
-                    <div class="mt-4">
-                      <div class="form-check mb-0" role="listitem" data-bs-toggle="collapse" data-bs-target="#paypal" aria-expanded="false" aria-controls="paypal">
-                        <label class="form-check-label d-flex align-items-center text-dark-emphasis fw-semibold">
-                          <input type="radio" class="form-check-input fs-base me-2 me-sm-3" name="payment-method">
-                          PayPal
-                          <img src="/theme/assets//img/payment-methods/paypal-icon.svg" class="ms-3" width="16" alt="PayPal">
-                        </label>
-                      </div>
-                      <div class="collapse" id="paypal" data-bs-parent="#paymentMethod"></div>
-                    </div>
+                
 
                     <!-- Google Pay -->
-                    <div class="mt-4">
-                      <div class="form-check mb-0" role="listitem" data-bs-toggle="collapse" data-bs-target="#googlepay" aria-expanded="false" aria-controls="googlepay">
-                        <label class="form-check-label d-flex align-items-center text-dark-emphasis fw-semibold">
-                          <input type="radio" class="form-check-input fs-base me-2 me-sm-3" name="payment-method">
-                          Google Pay
-                          <img src="/theme/assets//img/payment-methods/google-icon.svg" class="ms-3" width="20" alt="Google Pay">
-                        </label>
-                      </div>
-                      <div class="collapse" id="googlepay" data-bs-parent="#paymentMethod"></div>
-                    </div>
+
                   </div>
 
                   <!-- Add promo code button -->
@@ -168,7 +131,6 @@
 
 
           <form id="paymentForm" action="/order-now" method="POST" style="display: none;">
-            <input type="hidden" name="payment_mode" value="cash">
             <input type="hidden" name="first_name" value="<%=result[8][0].firstname%>">
             <input type="hidden" name="address" value="<%=result[8][0].address%>">
             <input type="hidden" name="city" value=" <%=result[8][0].city%>">
@@ -177,12 +139,19 @@
             <input type="hidden" name="state" value="<%=result[8][0].state%>">
             <input type="hidden" name="email" value="<%=result[8][0].email%>">
             <input type="hidden" name="number" value="<%=result[8][0].usernumber%>">
+            <input type="hidden" name="payment_mode" id="payment_mode">
+            <!-- <input type="hidden" name="total_amount" value="<%=cartData.totalPrice%>"> -->
+            <input type="hidden" name="total_amount" value="1">
+
+
 
           </form>
           
           <script>
             function submitForm() {
-              document.getElementById('paymentForm').submit();
+              let selectedPayment = document.querySelector('input[name="payment_mode"]:checked').value;
+        document.getElementById('payment_mode').value = selectedPayment;
+        document.getElementById('paymentForm').submit();
             }
           </script>
 

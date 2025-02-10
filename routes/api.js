@@ -1107,7 +1107,7 @@ router.get("/demo", (req, res) => {
 });
 
 router.get("/demo1", (req, res) => {
-  console.log(req.query);
+  console.log('demo1 data',req.query);
   res.send(req.query);
 });
 

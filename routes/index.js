@@ -1006,6 +1006,8 @@ router.get('/delete',(req,res)=>{
 
 router.get('/checkout',fetchCartData,(req,res)=>{
   //  req.session.usernumber = null;  
+// res.json(req.session)
+
   if(req.session.usernumber){
 
     req.session.page = '1'
@@ -1474,7 +1476,7 @@ if(err) throw err;
 
 
 router.get('/payment',(req,res)=>{
-  console.log(req.query)
+  console.log('payment data',req.query)
   req.session.message = req.query.message
 
 
@@ -1932,14 +1934,65 @@ router.get('/helpdesk',(req,res)=>{
 
 
 
+router.get('/payment-failed',(req,res)=>{
+  res.redirect(`/shipping?id_address_delivery=${req.session.addressInsertId}`)
+})
+
+
+
 router.post('/order-now', async (req, res) => {
   try {
     let body = req.body;
     console.log('Cart Data:', body);
 
-    if (req.body.payment_mode === 'online') {
-      // Handle online payment (existing logic)
-    } else {
+    if(req.body.payment_mode == 'online') {
+
+      const today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+      const orderid = Math.random().toString(36).substr(2, 12); // Random 12-character order ID
+      req.session.orderid = orderid;
+
+      req.session.userfirstname =  req.body.first_name;
+    
+      req.session.address = `${req.body.address}-${req.body.city}-${req.body.pincode}`;
+      req.session.city = req.body.city;
+      req.session.state = req.body.state;
+      req.session.pincode = req.body.pincode;
+      req.session.payment_mode = req.body.payment_mode;
+      req.session.totalprice = req.body.total_amount;
+      req.session.address = req.body.address;
+      req.session.last_name = req.body.last_name
+     
+      if((+req.session.totalprice) > 500) {
+        amount = req.session.totalprice
+      }
+      else {
+       amount = (+req.session.totalprice) + 0;
+      }
+  
+  
+      const url = `https://rzp_live_73LM5AK2fWqoob:igp3tmmiP1WGwFYLU7aZNoCo@api.razorpay.com/v1/orders/`;
+      const data = {
+        amount: amount* 100, // amount in the smallest currency unit
+        //amount:100,
+        currency: "INR",
+        payment_capture: true,
+      };
+      console.log("data", data);
+      const options = {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      fetch(url, options)
+        .then((res) => res.json())
+        .then((resu) => {
+             res.render('open',{resu : resu.id})
+        })
+  
+    }
+     else {
       // Handle cash on delivery
       body['status'] = 'pending';
 
@@ -2667,134 +2720,143 @@ router.get('/refund-policy',fetchCartData,(req,res)=>{
 router.post('/razorpay-response',(req,res)=>{
   let body = req.body;
   let cartData = req.body
-console.log(req.session.usernumber)
+ console.log('reponsebody',req.body)
+  res.redirect('/make-order')
 
 
 
-pool.query(`select firstname , lastname from users where id = '${req.session.usernumber}'`,(err,result)=>{
-  if(err) throw err;
-  else {
-    body['name'] = result[0].firstname + ' ' + result[0].lastname ;
-    body['shipping_charges'] =  req.session.shipping_charges;
 
-// res.send(result[0])
-    body['status'] = 'pending'
-        
-    
-      var today = new Date();
-    var dd = today.getDate();
-    
-    var mm = today.getMonth()+1; 
-    var yyyy = today.getFullYear();
-    if(dd<10) 
-    {
-      dd='0'+dd;
-    } 
-    
-    if(mm<10) 
-    {
-      mm='0'+mm;
-    } 
-    today = yyyy+'-'+mm+'-'+dd;
-    
-    
-    body['date'] = today
-    
-    
-    
-      var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var result = '';
-      for ( var i = 0; i < 12; i++ ) {
-          result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-      }
-     orderid = result;
-    
-    
-        body['address'] = req.session.address_id
-    
-    
-     console.log(req.body)
-    
-    
-     pool.query(`select * from cart where usernumber = '${req.session.usernumber}'`,(err,result)=>{
-         if(err) throw err;
-         else {
-    
-         let data = result
-    
-         for(i=0;i<result.length;i++){
-          data[i].name = req.body.name
-          data[i].date = today
-          data[i].orderid = orderid
-          data[i].status = 'pending'
-          data[i].number = req.session.usernumber
-          data[i].usernumber = req.session.usernumber
-          data[i].payment_mode = 'online'
-          data[i].address = req.body.address
-          data[i].id = null
-         data[i].order_date = today
-          data[i].razorpay_order_id = req.body.razorpay_order_id;
-          data[i].shipping_charges = req.session.shipping_charges;
-          
-          // if((+data[i].price) > 500){
-          //   data[i].price = data[i].price
-          //   data[i].shipping_charges = 0
-          // }
-          // else{
-          // data[i].price = (+data[i].price) + 500;
-          // data[i].shipping_charges = 500
-          // }
-    
-    
-         }
-    
-    
-       
-    
-    for(i=0;i<data.length;i++) {
-      console.log('quantity1',data[i].quantity)
-    
-    let quantity = data[i].quantity;
-    let booking_id = data[i].booking_id;
-    
-     pool.query(`insert into booking set ?`,data[i],(err,result)=>{
-             if(err) throw err;
-             else {
-        
-    
-    pool.query(`update product_manage set quantity = quantity - ${quantity} where productid = '${booking_id}'`,(err,result)=>{
-     if(err) throw err;
-     else {
-    
-     }
-    
-    })
-    
-             }
-        })
-    }
-    
-    
-      
-    
-    
-    pool.query(`delete from cart where usernumber = '${req.session.usernumber}'`,(err,result)=>{
-      if(err) throw err;
-      else {
-         res.redirect('/confirmation')
-      }
-    })
-    
-    
-         }
-     })
-
-  
-
-
-  }
 })
 
+
+router.get('/make-order',(req,res)=>{
+  // res.json(req.session)
+
+  let body=req.query;
+      // Handle cash on delivery
+      body['status'] = 'pending';
+
+      const today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+      const orderid = Math.random().toString(36).substr(2, 12); // Random 12-character order ID
+      req.session.orderid = orderid;
+
+      body['address'] = `${req.session.address}, ${req.session.city}, ${req.session.pincode}`;
+      body['name'] = req.session.first_name;
+      body['date'] = today;
+
+      // Fetch cart data and process the order
+      pool.query(`SELECT c.* , (select p.name from product p where p.id = c.booking_id) as product_name FROM cart c WHERE c.usernumber = '${req.session.usernumber}'`, async (err, result) => {
+        if (err) throw err;
+      console.log('result fetch online',result)
+        const data = result.map((item) => ({
+          // ...item,
+          name: req.session.userfirstname,
+          date: today,
+          orderid,
+          status: 'pending',
+          number: req.session.usernumber,
+          payment_mode: 'online',
+          address: body.address,
+          order_date: today,
+          time: body.time,
+          price: item.price,
+          shipping_charges: 0,
+          quantity : item.quantity,
+          booking_id : item.booking_id,
+          product_name:item.product_name
+        }));
+
+
+        console.log('data comes',data)
+
+        // Insert booking and update product quantities
+        for (const orderItem of data) {
+          const { quantity, booking_id } = orderItem;
+
+          // Insert into booking table
+          await new Promise((resolve, reject) => {
+            pool.query('INSERT INTO booking SET ?', orderItem, (err) => {
+              if (err) reject(err);
+              resolve();
+            });
+          });
+
+          // Update product quantities
+          await new Promise((resolve, reject) => {
+            pool.query(
+              `UPDATE product SET quantity = quantity - ${quantity} WHERE id = '${booking_id}'`,
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              }
+            );
+          });
+        }
+
+        // Delete cart items
+        pool.query(`DELETE FROM cart WHERE usernumber = '${req.session.usernumber}'`, async (err) => {
+          if (err) throw err;
+
+          // Create a shipping order via Shiprocket
+          try {
+            const token = await deliveryApi.shippingAuthLogin();
+            console.log('token recieved',token)
+            console.log('body recieved',req.body)
+            console.log('data recieved',data)
+
+            const shippingOrderDetails = {
+              order_id: orderid,
+              order_date: today,
+              pickup_location: 'store_location',
+              billing_customer_name: req.session.userfirstname,
+              billing_last_name:'',
+              billing_address: req.session.address,
+              billing_address_2: '',
+              billing_city: req.session.city,
+              billing_pincode: req.session.pincode,
+              billing_state: req.session.state,
+              billing_country: 'India',
+              billing_email: req.session.email,
+              billing_phone: req.session.usernumber,
+              shipping_is_billing: true,
+              order_items: data.map((item) => ({
+                name: item.product_name,
+                sku: item.sku || '0',
+                units: item.quantity,
+                selling_price: item.price,
+              })),
+              payment_method: req.session.payment_mode,
+              shipping_charges: 0,
+              sub_total: data.reduce((sum, item) => sum + item.price * item.quantity, 0),
+              length: 10,
+              breadth: 10,
+              height: 10,
+              weight: 1.0,
+            };
+
+
+            console.log('shippingOrderDetails',shippingOrderDetails)
+
+            const shippingResponse = await deliveryApi.createShippingOrder(shippingOrderDetails, token);
+            console.log('Shipping Order Response:', shippingResponse);
+             pool.query(`insert into shipping set ?`,shippingResponse,(err,result)=>{
+              if(err) throw err;
+              else{
+                res.redirect('/confirmation');
+
+              }
+             })
+
+
+
+          } catch (shippingError) {
+            console.error('Failed to create shipping order:', shippingError.message);
+            res.status(500).json({ success: false, error: shippingError.message });
+          }
+        });
+      });
+  
+  
 })
 
 
@@ -2887,6 +2949,7 @@ router.post('/save-address', (req, res) => {
     }
 
     const addressInsertId = result.insertId;
+    req.session.addressInsertId = addressInsertId
 
     // Insert into the users table
     pool.query(`select * from users where usernumber = '${req.body.usernumber}'`,(err,result)=>{
@@ -3295,9 +3358,12 @@ router.get('/invoice',(req,res)=>{
 
 
 router.get('/confirmation',fetchCartData,(req,res)=>{
+
+  // res.json(req.session)
+
   if(req.session.usernumber){
     var query = `select * from category order by id desc;`
-    var query1 = `select * from booking where usernumber = '${req.session.usernumber}' order by id desc limit 1 ;`
+    var query1 = `select * from booking where number = '${req.session.usernumber}' order by id desc limit 1 ;`
     var query2 = `select * from category where id = '${req.query.id}';`
     var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
@@ -3312,6 +3378,7 @@ router.get('/confirmation',fetchCartData,(req,res)=>{
     pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
       if(err) throw err;
       else res.render('confirmation',{result,login:true,orderid:req.session.orderid,title:'Confirmation',cartData:req.cartData});
+      // else res.json(result)
     })
   }
   else {
