@@ -363,8 +363,8 @@ router.get('/shop/all-collections',(req,res)=>{
     
       pool.query(query+query1+query2+query6+query7+query8+query9,(err,result)=>{
         if(err) throw err;
-        else if(result[1][0]) res.render('all-shop',{result:result,login:true,title:'Most Loved',cartData:req.cartData})
-        else  res.render('all-shop',{result,login:true,title:'Most Loved',cartData:req.cartData})
+        else if(result[1][0]) res.render('all-shop',{result:result,login:true,title:'Most Loved',cartData:req.cartData,q:'search'})
+        else  res.render('all-shop',{result,login:true,title:'Most Loved',cartData:req.cartData,q:'search'})
       })
     }
     else{
@@ -388,8 +388,8 @@ router.get('/shop/all-collections',(req,res)=>{
     
       pool.query(query+query1+query2+query6+query7+query8+query9,(err,result)=>{
          if(err) throw err;
-        else if(result[1][0]) res.render('all-shop',{result:result,login:false,title:'Most Loved',cartData:req.cartData})
-        else  res.render('all-shop',{result,login:false,title:'Most Loved',cartData:req.cartData})
+        else if(result[1][0]) res.render('all-shop',{result:result,login:false,title:'Most Loved',cartData:req.cartData,q:'search'})
+        else  res.render('all-shop',{result,login:false,title:'Most Loved',cartData:req.cartData,q:'search'})
       })
     }
     

@@ -1,6 +1,12 @@
 <%- include ('./navbar.ejs') %>
 
 
+<% if(result[2][0]){ %>
+<title><%=result[2][0].name%> |  Fika</title>
+<meta name="description" content="<%=result[2][0].name%> |  Fika">
+<% } else { %>
+
+  <% } %>
 
     <!-- Page content -->
     <main class="content-wrapper">
