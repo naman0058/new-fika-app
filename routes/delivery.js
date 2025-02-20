@@ -53,7 +53,32 @@ async function createShippingOrder(orderDetails, token) {
   }
 
 
+
+  async function cancelOrders(token, orderIds) {
+    try {
+      const response = await axios.post(
+        'https://apiv2.shiprocket.in/v1/external/orders/cancel',
+        { ids: orderIds },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          maxBodyLength: Infinity,
+        }
+      );
+  
+      return response.data; // Return API response
+    } catch (error) {
+      console.error('Error canceling orders:', error.response ? error.response.data : error.message);
+      throw error; // Throw error for handling in caller function
+    }
+  }
+  
+
+
   module.exports =
    { createShippingOrder,
-    shippingAuthLogin 
+    shippingAuthLogin,
+    cancelOrders 
     }

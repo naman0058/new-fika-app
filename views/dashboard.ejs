@@ -218,6 +218,7 @@
                         <th>Payment Mode</th>
                         <th>Progress</th>
                         <th>Price</th>
+                        <th>Invoice</th>
                         <th>Status</th>
                         
                       </tr>
@@ -242,6 +243,7 @@
 
                        
                         <td>Rs. <%=result[8][i].price%></td>
+                        <td><a href="/invoice?orderid=<%=result[8][i].orderid%>">View Invoice</a></td>
 
 
                      
@@ -268,7 +270,7 @@
       <% } %>
 
                         <td>
- <td> <button type="button" id="<%=result[8][i].id%>" status="Cancel" class="btn btn-dark update-status">Cancel</button></td>
+ <td> <button type="button" id="<%=result[8][i].orderid%>" status="Cancel" class="btn btn-dark update-status">Cancel</button></td>
 
                           <!-- <select class="form-control update_status"  id='<%=result[8][i].id%>'>
                             <option value="-">Select Status</option>

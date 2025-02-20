@@ -1,11 +1,5 @@
 <%- include ('./navbar1.ejs') %>
-
-
-
-  
-
-
-          <!-- Orders content -->
+<!-- Orders content -->
           <div class="col-lg-9">
             <div class="ps-lg-3 ps-xl-0">
 
@@ -14,179 +8,125 @@
                 <div class="col-md-4 col-xl-6 mb-3 mb-md-0">
                   <h1 class="h2 me-3 mb-0">Orders</h1>
                 </div>
-                <!-- <div class="col-md-8 col-xl-6">
-                  <div class="row row-cols-1 row-cols-sm-2 g-3 g-xxl-4">
-                    <div class="col">
-                      <select class="form-select" data-select="{
-                        &quot;placeholderValue&quot;: &quot;Select status&quot;,
-                        &quot;choices&quot;: [
-                          {
-                            &quot;value&quot;: &quot;&quot;,
-                            &quot;label&quot;: &quot;Select status&quot;,
-                            &quot;placeholder&quot;: true
-                          },
-                          {
-                            &quot;value&quot;: &quot;inprogress&quot;,
-                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-info rounded-circle p-1 me-2\&quot;></span>In progress</div>&quot;
-                          },
-                          {
-                            &quot;value&quot;: &quot;delivered&quot;,
-                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-success rounded-circle p-1 me-2\&quot;></span>Delivered</div>&quot;
-                          },
-                          {
-                            &quot;value&quot;: &quot;canceled&quot;,
-                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-danger rounded-circle p-1 me-2\&quot;></span>Canceled</div>&quot;
-                          },
-                          {
-                            &quot;value&quot;: &quot;delayed&quot;,
-                            &quot;label&quot;: &quot;<div class=\&quot;d-flex align-items-center text-nowrap\&quot;><span class=\&quot;bg-warning rounded-circle p-1 me-2\&quot;></span>Delayed</div>&quot;
-                          }
-                        ]
-                      }" data-select-template="true" aria-label="Status sorting"></select>
-                    </div>
-                    <div class="col">
-                      <select class="form-select" data-select="{&quot;removeItemButton&quot;: false}" aria-label="Timeframe sorting">
-                        <option value="all-time">For all time</option>
-                        <option value="last-year">For last year</option>
-                        <option value="last-3-months">For last 3 months</option>
-                        <option value="last-30-days">For last 30 days</option>
-                        <option value="last-week">For last week</option>
-                      </select>
-                    </div>
-                  </div>
-                </div> -->
-              </div>
+                </div>
 
 
               <!-- Sortable orders table -->
-              <div data-filter-list="{&quot;listClass&quot;: &quot;orders-list&quot;, &quot;sortClass&quot;: &quot;orders-sort&quot;, &quot;valueNames&quot;: [&quot;date&quot;, &quot;total&quot;]}">
+              <div data-filter-list='{"listClass": "orders-list", "sortClass": "orders-sort", "valueNames": ["date", "total"]}'>
                 <table class="table align-middle fs-sm text-nowrap">
                   <thead>
                     <tr>
-                      <th scope="col" class="py-3 ps-0">
-                        <span class="text-body fw-normal">Order <span class="d-none d-md-inline">#</span></span>
-                      </th>
+                      <th scope="col" class="py-3 ps-0"><span class="text-body fw-normal">Order <span class="d-none d-md-inline">#</span></span></th>
+                     
+                      <th scope="col" class="py-3 ps-0"><span class="text-body fw-normal">Order <span class="d-none d-md-inline">Name</span></span></th>
                       <th scope="col" class="py-3 d-none d-md-table-cell">
                         <button type="button" class="btn orders-sort fw-normal text-body p-0" data-sort="date">Order date</button>
                       </th>
-                      <th scope="col" class="py-3 ps-0">
-                        <span class="text-body fw-normal">Order <span class="d-none d-md-inline">Name</span></span>
-                      </th>
+                      <th scope="col" class="py-3 d-none d-md-table-cell"><span class="text-body fw-normal">Status</span></th>
                       <th scope="col" class="py-3 d-none d-md-table-cell">
-                        <span class="text-body fw-normal">Status</span>
-                      </th>
-                      <th scope="col" class="py-3 d-none d-md-table-cell">
-                        <button type="button" class="btn orders-sort fw-normal text-body p-0" data-sort="total">Total</button>
+                        <button type="button" class="btn orders-sort fw-normal text-body p-0" data-sort="total">Invoice</button>
                       </th>
                       <th scope="col" class="py-3">&nbsp;</th>
                     </tr>
                   </thead>
+                  
                   <tbody class="text-body-emphasis orders-list">
-
-                    <!-- Item -->
-
-<% for(i=0;i<result[1].length;i++){ %>
-
-                      <tr>
+                    <% for (let i = 0; i < result[1].length; i++) { 
+                      const order = result[1][i]; // Store the order object for readability
+                    %>
+                    <tr>
                       <td class="fw-medium pt-2 pb-3 py-md-2 ps-0">
-                        <!-- <a class="d-inline-block animate-underline text-body-emphasis text-decoration-none py-2" href="#orderDetails" data-bs-toggle="offcanvas" aria-controls="orderDetails" aria-label="Show order details"> -->
-                          <a class="d-inline-block animate-underline text-body-emphasis text-decoration-none py-2" 
-                          href="#orderDetails" 
-                          data-bs-toggle="offcanvas" 
-                          data-orderid="<%=result[1][i].orderid%>"
-                          data-status="<%=result[1][i].status.toUpperCase()%>"
-                          data-image='<%= result[1][i].bookingimage %>'
-                          data-name ="<%= result[1][i].bookingname %>"
-                          data-price = "<%= result[1][i].price %>"
-                          data-quantity = "<%= result[1][i].quantity %>"
+                        <a class="d-inline-block text-body-emphasis text-decoration-none py-2" 
+                          href="/invoice?orderid=<%= order.orderid %>" 
+                          data-bs-toggle="offcanvas"
+                          data-orderid="<%= order.orderid %>"
+                          data-productid="<%= order.booking_id %>"
+                          data-status="<%= order.status.toUpperCase() %>"
+                          data-image="<%= order.bookingimage %>"
+                          data-name="<%= order.bookingname %>"
+                          data-price="<%= order.price %>"
+                          data-quantity="<%= order.quantity %>"
                           data-deliverydate="Feb 8, 2025 / 10:00 - 12:00"
                           data-shippingmethod="Courier delivery"
-                          data-shippingaddress="<%= result[1][i].address %>"
-                          data-paymentmethod="<%= result[1][i].payment_mode %>"
+                          data-shippingaddress="<%= order.address %>"
+                          data-paymentmethod="<%= order.payment_mode %>"
                           data-tax="12.40"
                           data-shipping="26.50"
-                          data-total="<%=result[1][i].price%>">
-                        <span class="animate-target"><%=result[1][i].orderid%></span>
+                          data-originalid="<%= order.id %>"
+                          data-total="<%= order.price %>">
+                          <span class="animate-target"><%= order.orderid %></span>
                         </a>
+              
                         <ul class="list-unstyled fw-normal text-body m-0 d-md-none">
-                          <div class="truncate-text" style="max-width: 250px;">
-                            <%= result[1][i].bookingname %>
-                        </div>
-                          <li><%=result[1][i].order_date%></li>
-
+                          <div class="truncate-text" style="max-width: 250px;"><%= order.bookingname %></div>
+                          <li><%= order.order_date %></li>
                           <li class="d-flex align-items-center">
                             <span class="bg-info rounded-circle p-1 me-2"></span>
-                            <%=result[1][i].satus%>
+                            <%= order.status.toUpperCase() %>
                           </li>
-                          <li class="fw-medium text-body-emphasis">Rs. <%=result[1][i].price%></li>
+                          <li class="fw-medium text-body-emphasis">Rs. <%= order.price %></li>
                         </ul>
                       </td>
-
-
+              
                       <td class="fw-medium py-3 d-none d-md-table-cell">
-                        <div class="truncate-text" style="max-width: 250px;">
-                          <%= result[1][i].bookingname %>
-                      </div>
+                        <div class="truncate-text" style="max-width: 250px;"><%= order.bookingname %></div>
+                      </td>
+              
+                      <td class="fw-medium py-3 d-none d-md-table-cell">
+                        <%= order.order_date %>
                         <span class="date d-none">25-02-06</span>
                       </td>
-
-                      <td class="fw-medium py-3 d-none d-md-table-cell">
-                        <%=result[1][i].order_date%>
-                        <span class="date d-none">25-02-06</span>
-                      </td>
+              
                       <td class="fw-medium py-3 d-none d-md-table-cell">
                         <span class="d-flex align-items-center">
                           <span class="bg-info rounded-circle p-1 me-2"></span>
-                          <%=result[1][i].status.toUpperCase()%>
+                          <%= order.status.toUpperCase() %>
                         </span>
                       </td>
+              
                       <td class="fw-medium py-3 d-none d-md-table-cell">
-                        Rs. <%=result[1][i].price%>
-                        <span class="total d-none"> <%=result[1][i].price%></span>
+                       <a href="/invoice?orderid=<%=order.orderid%>">View Invoice</a>
+                        <span class="total d-none"><%= order.price %></span>
                       </td>
+              
                       <td class="py-3 pe-0">
                         <span class="d-flex align-items-center justify-content-end position-relative gap-1 gap-sm-2 ms-n2 ms-sm-0">
-                          <span><img src="/images/<%=result[1][i].bookingimage%>" width="64" alt="Thumbnail"></span>
+                          <img src="/images/<%= order.bookingimage %>" width="64" alt="Thumbnail">
                           <a class="d-inline-block animate-underline text-body-emphasis text-decoration-none py-2" 
-                          href="#orderDetails" 
-                          data-bs-toggle="offcanvas" 
-                          data-orderid="<%=result[1][i].orderid%>"
-                          data-status="<%=result[1][i].status.toUpperCase()%>"
-                          data-image='<%= result[1][i].bookingimage %>'
-                          data-name ="<%= result[1][i].bookingname %>"
-                          data-price = "<%= result[1][i].price %>"
-                          data-quantity = "<%= result[1][i].quantity %>"
-                          data-deliverydate="Feb 8, 2025 / 10:00 - 12:00"
-                          data-shippingmethod="Courier delivery"
-                          data-shippingaddress="<%= result[1][i].address %>"
-                          data-paymentmethod="<%= result[1][i].payment_mode %>"
-                          data-tax="12.40"
-                          data-shipping="26.50"
-                          data-total="<%=result[1][i].price%>">
+                            href="#orderDetails" 
+                            data-bs-toggle="offcanvas"
+                            data-orderid="<%= order.orderid %>"
+                            data-productid="<%= order.booking_id %>"
+                            data-status="<%= order.status.toUpperCase() %>"
+                            data-image="<%= order.bookingimage %>"
+                            data-name="<%= order.bookingname %>"
+                            data-price="<%= order.price %>"
+                            data-quantity="<%= order.quantity %>"
+                            data-deliverydate="Feb 8, 2025 / 10:00 - 12:00"
+                            data-shippingmethod="Courier delivery"
+                            data-shippingaddress="<%= order.address %>"
+                            data-paymentmethod="<%= order.payment_mode %>"
+                            data-tax="12.40"
+                            data-shipping="26.50"
+                            data-originalid="<%= order.id %>"
+                            data-total="<%= order.price %>">
+                            
                             <i class="ci-chevron-right fs-lg"></i>
                           </a>
+
                         </span>
                       </td>
                     </tr>
-
                     <% } %>
-
                   </tbody>
                 </table>
               </div>
-
-
-              <!-- Pagination -->
-           
+   
             </div>
           </div>
         </div>
       </div>
     </main>
-
-
-    <!-- Page footer -->
-  
 
 
     <!-- Sidebar navigation offcanvas toggle that is visible on screens < 992px wide (lg breakpoint) -->
@@ -206,9 +146,7 @@
           <rect x=".75" y=".75" width="60.5" height="30.5" rx="15.25" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"></rect>
         </svg>
       </a>
-      <a class="btn btn-sm btn-outline-secondary text-uppercase bg-body rounded-pill shadow animate-rotate ms-2 me-n5" href="#customizer" style="font-size: .625rem; letter-spacing: .05rem;" data-bs-toggle="offcanvas" role="button" aria-controls="customizer">
-        Customize<i class="ci-settings fs-base ms-1 me-n2 animate-target"></i>
-      </a>
+     
     </div>
 
 
@@ -227,56 +165,259 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-  const orderLinks = document.querySelectorAll('[data-bs-toggle="offcanvas"]');
+    document.body.addEventListener("click", function (event) {
+      const target = event.target.closest('[data-bs-toggle="offcanvas"]');
+      if (!target) return;
 
-  orderLinks.forEach(link => {
-    link.addEventListener('click', function () {
-      const orderId = this.getAttribute('data-orderid');
-      const status = this.getAttribute('data-status');
-      // const items = JSON.parse(this.getAttribute('data-items'));
-      const image = this.getAttribute('data-image');
-      const name = this.getAttribute('data-name');
-      const price = this.getAttribute('data-price');
-      const quantity = this.getAttribute('data-quantity');
+      // Extract data attributes
+      const { orderid, status, image, name, price, quantity, deliverydate, shippingaddress, paymentmethod, total , productid,originalid} = target.dataset;
 
+      // Cache DOM elements
+      const elements = {
+        orderId: document.getElementById('order-id'),
+        productId: document.getElementById('product-id'),
+        originalId: document.getElementById('original-id'),
+        orderStatus: document.getElementById('order-status'),
+        orderItems: document.getElementById('order-items'),
+        deliveryDate: document.getElementById('delivery-date'),
+        shippingAddress: document.getElementById('shipping-address'),
+        paymentMethod: document.getElementById('payment-method'),
+        shipping: document.getElementById('shipping'),
+        orderName: document.getElementById('order-name'),
+        orderPrice: document.getElementById('order-price'),
+        orderQuantity: document.getElementById('order-quantity'),
+        orderImage: document.getElementById('order-image'),
+        totalPrice: document.getElementById('total-price'),
+        actionButtons: document.getElementById('order-actions'), // Container for buttons
+      };
 
+      // Update elements (if they exist)
+      elements.orderId && (elements.orderId.innerText = orderid);
+      elements.productId && (elements.productId.innerText = productid);
+      elements.originalId && (elements.originalId.innerText = originalid);
+      elements.orderStatus && (elements.orderStatus.innerText = status);
+      elements.deliveryDate && (elements.deliveryDate.innerText = deliverydate);
+      elements.shippingAddress && (elements.shippingAddress.innerText = shippingaddress);
+      elements.paymentMethod && (elements.paymentMethod.innerText = paymentmethod.toUpperCase());
+      elements.shipping && (elements.shipping.innerText = "Free");
+      elements.orderName && (elements.orderName.innerText = name);
+      elements.orderPrice && (elements.orderPrice.innerText = `Rs. ${price}`);
+      elements.orderQuantity && (elements.orderQuantity.innerText = `QTY. ${quantity}`);
+      elements.orderImage && (elements.orderImage.innerHTML = `<img src='/images/${image}' width="110" alt="${name}">`);
+      elements.totalPrice && (elements.totalPrice.innerText = `Rs. ${total}`);
 
+      // Clear previous action buttons
+      if (elements.actionButtons) {
+        elements.actionButtons.innerHTML = '';
+      }
 
-      const deliveryDate = this.getAttribute('data-deliverydate');
-      const shippingMethod = this.getAttribute('data-shippingmethod');
-      const shippingAddress = this.getAttribute('data-shippingaddress');
-      const paymentMethod = this.getAttribute('data-paymentmethod');
-      // const tax = this.getAttribute('data-tax');
-      const shipping = this.getAttribute('data-shipping');
-      const total = this.getAttribute('data-total');
-
-      // Update Offcanvas
-      document.getElementById('order-id').innerText = orderId;
-      document.getElementById('order-status').innerText = status;
-
-      // Populate Items
-      const orderItemsContainer = document.getElementById('order-items');
-      orderItemsContainer.innerHTML = ''; // Clear previous items
-
-   
-      // Update delivery and payment details
-      document.getElementById('delivery-date').innerText = deliveryDate;
-      // document.getElementById('shipping-method').innerText = shippingMethod;
-      document.getElementById('shipping-address').innerText = shippingAddress;
-      document.getElementById('payment-method').innerText = paymentMethod.toUpperCase();
-      // document.getElementById('tax').innerText = `$${tax}`;
-      document.getElementById('shipping').innerText = `Free`;
-      document.getElementById('order-name').innerText = name;
-      document.getElementById('order-price').innerText = `Rs. ${price}`;
-      document.getElementById('order-quantity').innerText = `QTY. ${quantity}`;
-      document.getElementById('order-image').innerHTML = `<img src='/images/${image}' width="110" alt="iPad Pro">`;
-
-
-
-
-      document.getElementById('total-price').innerText = `Rs. ${total}`;
+      // Add buttons if status is "COMPLETED"
+      if (status === "COMPLETED" && elements.actionButtons) {
+        elements.actionButtons.innerHTML = `
+         <div class="d-flex flex-column gap-2" style="margin:20px">
+          <button class="btn btn-primary btn-sm rate-review" data-orderid="${originalid}" data-productid = "${productid}">
+            Rate & Review
+          </button>
+          <button class="btn btn-warning btn-sm request-replacement" data-orderid="${originalid}" data-productid = "${productid}">
+            Request Replacement
+          </button>
+        
+          </div>
+        `;
+      }
+      if (status != "COMPLETED" && status != "CANCEL" && elements.actionButtons) {
+        elements.actionButtons.innerHTML = `
+         <div class="d-flex flex-column gap-2" style="margin:20px">
+          <button class="btn btn-danger btn-sm delete-order" data-orderid="${orderid}" data-productid = "${productid}">
+            Cancel Order
+          </button>
+         
+          </div>
+        `;
+      }
     });
   });
-});
+</script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Function to show loader
+    function showLoader() {
+      document.getElementById("loader").style.display = "block";
+    }
+
+    // Function to hide loader
+    function hideLoader() {
+      document.getElementById("loader").style.display = "none";
+    }
+
+    // Replacement button click
+    document.body.addEventListener("click", function (event) {
+      if (event.target.classList.contains("request-replacement")) {
+        const orderId = event.target.dataset.orderid;
+        const productId = event.target.dataset.productid;
+
+        document.getElementById("replacementOrderId").value = orderId;
+        document.getElementById("replacementProductId").value = productId;
+
+        new bootstrap.Modal(document.getElementById("replacementModal")).show();
+      }
+    });
+
+    // Submit Replacement Request
+    document.getElementById("submitReplacement").addEventListener("click", function () {
+      const orderId = document.getElementById("replacementOrderId").value;
+      const video = document.getElementById("unboxingVideo").files[0];
+      const issue = document.getElementById("issueDescription").value;
+      const productId = document.getElementById("replacementProductId").value;
+
+      if (!video) {
+        alert("Please upload an unboxing video.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("orderId", orderId);
+      formData.append("productId", productId);
+      formData.append("video", video);
+      formData.append("issue", issue);
+
+      showLoader();
+
+      fetch("/submit-replacement", {
+        method: "POST",
+        body: formData
+      }).then(response => response.json())
+        .then(data => {
+          hideLoader();
+          alert(data.message);
+          if(data.message == 'Replacement request submitted successfully'){
+          window.location.reload()
+          new bootstrap.Modal(document.getElementById("replacementModal")).hide();
+          }
+        }).catch(error => {
+          hideLoader();
+          console.error("Error:", error);
+        });
+    });
+
+    // Review button click
+    document.body.addEventListener("click", function (event) {
+      if (event.target.classList.contains("rate-review")) {
+        const orderId = event.target.dataset.orderid;
+        const productId = event.target.dataset.productid;
+
+        document.getElementById("reviewOrderId").value = orderId;
+        document.getElementById("reviewProductId").value = productId;
+
+        new bootstrap.Modal(document.getElementById("reviewModal")).show();
+      }
+    });
+
+
+
+    document.body.addEventListener("click", function (event) {
+      if (event.target.classList.contains("delete-order")) {
+        const orderId = event.target.dataset.orderid;
+        const productId = event.target.dataset.productid;
+
+        document.getElementById("deleteItemId").value = orderId;
+
+        new bootstrap.Modal(document.getElementById("deleteModal")).show();
+      }
+    });
+
+  
+
+
+    // Submit Review
+    document.getElementById("submitReview").addEventListener("click", function () {
+      const orderId = document.getElementById("reviewOrderId").value;
+      const productId = document.getElementById("reviewProductId").value;
+      const rating = document.getElementById("rating").value;
+      const review = document.getElementById("reviewText").value;
+
+      showLoader();
+
+      fetch("/submit-review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, rating, review, productId })
+      }).then(response => response.json())
+        .then(data => {
+          hideLoader();
+          alert(data.message);
+          if(data.message == 'Review submitted successfully'){
+          window.location.reload()
+          new bootstrap.Modal(document.getElementById("reviewModal")).hide();
+          }
+        }).catch(error => {
+          hideLoader();
+          console.error("Error:", error);
+        });
+    });
+  });
+
+
+
+
+
+
+// delete order
+
+
+
+
+
 
 </script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let deleteItemId = null;
+
+    // When delete button is clicked, set the ID in modal
+    document.querySelectorAll(".delete-button").forEach(button => {
+      
+      button.addEventListener("click", function() {
+        deleteItemId = this.getAttribute("data-id"); // Get item ID
+       
+        document.getElementById("deleteItemId").value = deleteItemId;
+      });
+    });
+
+    // Handle the confirmation click
+    document.getElementById("confirmDelete").addEventListener("click", function() {
+      
+      const deleteItemId = document.getElementById("deleteItemId").value;
+      alert(deleteItemId)
+
+      if (!deleteItemId) return;
+     
+      fetch(`/admin/update-status?id=${deleteItemId}&status=Cancel`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status_code == 200) {
+          alert("Order cancelled successfully");
+          window.location.reload(); // Reload page to update UI
+        } else {
+          alert("Failed to delete item.");
+        }
+      })
+      .catch(error => console.error("Error:", error));
+      
+      // Close modal
+      let deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteModal"));
+      deleteModal.hide();
+    });
+  });
+</script>
+
+<!-- Loader -->
+

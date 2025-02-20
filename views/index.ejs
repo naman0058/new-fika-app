@@ -183,7 +183,7 @@
         <!-- Customizer code -->
         <div class="customizer-collapse collapse" id="customizerCode">
           <div class="nav mb-3">
-            <a class="nav-link animate-underline fs-base p-0" href=".html" data-bs-toggle="collapse" aria-expanded="true" aria-controls="customizerSettings customizerCode">
+            <a class="nav-link animate-underline fs-base p-0" href="/" data-bs-toggle="collapse" aria-expanded="true" aria-controls="customizerSettings customizerCode">
               <i class="ci-chevron-left fs-lg ms-n1 me-1"></i>
               <span class="animate-target">Back to settings</span>
             </a>
@@ -243,7 +243,9 @@
             <!-- Search visible on screens > 991px wide (lg breakpoint) -->
             <div class="position-relative flex-fill d-none d-lg-block pe-4 pe-xl-5">
               <i class="ci-search position-absolute top-50 translate-middle-y d-flex fs-lg text-white ms-3"></i>
-              <input type="search" class="form-control form-control-lg form-icon-start border-white rounded-pill" placeholder="Search the products">
+              <form id="searchForm" action="/search" method="GET">
+                <input type="search" id="searchInput" name="q" class="form-control form-control-lg form-icon-start border-white rounded-pill" placeholder="Search the products">
+              </form>
             </div>
 
             <!-- Sale link visible on screens > 1200px wide (xl breakpoint) -->
@@ -350,10 +352,21 @@
       <!-- Search visible on screens < 992px wide (lg breakpoint). It is hidden inside collapse by default -->
       <div class="collapse position-absolute top-100 z-2 w-100 bg-dark d-lg-none" id="searchBar">
         <div class="container position-relative my-3" data-bs-theme="dark">
+          <form id="searchForm" action="/search" method="GET">
           <i class="ci-search position-absolute top-50 translate-middle-y d-flex fs-lg text-white ms-3"></i>
-          <input type="search" class="form-control form-icon-start border-white rounded-pill" placeholder="Search the products" data-autofocus="collapse">
+          <input type="search" name="q" class="form-control form-icon-start border-white rounded-pill" placeholder="Search the products" data-autofocus="collapse">
+       </form>
         </div>
       </div>
+
+
+      <!-- <div class="collapse position-absolute top-100 z-2 w-100 bg-dark d-lg-none" id="searchBar">
+        <div class="container position-relative my-3" data-bs-theme="dark">
+        <form id="searchForm" action="/search" method="GET">
+          <i class="ci-search position-absolute top-50 translate-middle-y d-flex fs-lg text-white ms-3"></i>
+          <input type="search" id="searchInput" name="q" class="form-control form-control-lg form-icon-start border-white rounded-pill" placeholder="Search the products">
+        </form>
+      </div> -->
 
       <!-- Main navigation that turns into offcanvas on screens < 992px wide (lg breakpoint) -->
       <div class="collapse navbar-stuck-hide" id="stuckNav">
@@ -402,7 +415,7 @@
                       <!-- Mega menu -->
                       <ul class="dropdown-menu dropdown-menu-static w-100 rounded-top-0 rounded-bottom-4 py-1 p-lg-1" style="--cz-dropdown-spacer: 0; --cz-dropdown-item-padding-y: .625rem; --cz-dropdown-item-spacer: 0">
                         <li class="d-lg-none pt-2">
-                          <a class="dropdown-item fw-medium" href="shop-categories-electronics.html">
+                          <a class="dropdown-item fw-medium">
                             <i class="ci-grid fs-xl opacity-60 pe-1 me-2"></i>
                             All Categories
                             <i class="ci-chevron-right fs-base ms-auto me-n1"></i>
@@ -835,10 +848,10 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end fs-xs p-2" style="min-width: auto">
                     <li>
-                      <a class="dropdown-item" href="#!">
+                      <button class="dropdown-item" onclick="addToWishlist('<%=result[4][i].id%>')">
                         <i class="ci-heart fs-sm ms-n1 me-2"></i>
                         Add to Wishlist
-                      </a>
+                      </button>
                     </li>
                 
                   </ul>
@@ -1079,10 +1092,10 @@
                       </button>
                       <ul class="dropdown-menu dropdown-menu-end fs-xs p-2" style="min-width: auto">
                         <li>
-                          <a class="dropdown-item" href="#!">
+                          <button class="dropdown-item" onclick="addToWishlist('<%=result[8][i].id%>')">
                             <i class="ci-heart fs-sm ms-n1 me-2"></i>
                             Add to Wishlist
-                          </a>
+                          </buttton>
                         </li>
                         <!-- <li>
                           <a class="dropdown-item" href="#!">

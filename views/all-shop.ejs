@@ -9,13 +9,11 @@
       <nav class="container pt-3 my-3 my-md-4" aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item active" aria-current="page"><%=result[2][0].name%></li>
         </ol>
       </nav>
 
 
       <!-- Page title -->
-      <h1 class="h3 container mb-4"><%=result[2][0].name%></h1>
 
 
       <!-- Banners that are turned into collaspse on screens < 768px wide (sm breakpoint) -->
@@ -33,19 +31,25 @@
                 <div class="position-relative d-flex flex-column flex-sm-row align-items-center h-100 rounded-5 overflow-hidden px-5 px-sm-0 pe-sm-4">
                   <span class="position-absolute top-0 start-0 w-100 h-100 d-none-dark rtl-flip" style="background: linear-gradient(90deg, #accbee 0%, #e7f0fd 100%)"></span>
                   <span class="position-absolute top-0 start-0 w-100 h-100 d-none d-block-dark rtl-flip" style="background: linear-gradient(90deg, #1b273a 0%, #1f2632 100%)"></span>
-                  <div class="position-relative z-1 text-center text-sm-start pt-4 pt-sm-0 ps-xl-4 mt-2 mt-sm-0 order-sm-2">
-                    <!-- <h2 class="h3 mb-2"><%=result[1][0].name%></h2> -->
-                    <p class="fs-sm text-light-emphasis mb-sm-4"><%=result[1][0].name%></p>
-                    <a class="btn btn-primary" href="/product?id=<%=result[1][0].id%>">
-                      From <%=result[1][0].net_amount%>
-                      <i class="ci-arrow-up-right fs-base ms-1 me-n1"></i>
-                    </a>
-                  </div>
-                  <div class="position-relative z-1 w-100 align-self-end order-sm-1" style="max-width: 416px">
-                    <div class="ratio rtl-flip" style="--cz-aspect-ratio: calc(320 / 416 * 100%)">
-                      <img src="/images/<%=result[1][0].image%>" alt="iPhone 14">
+                 
+                  <% if (result[1] && result[1].length > 0) { %>
+                    <div class="position-relative z-1 text-center text-sm-start pt-4 pt-sm-0 ps-xl-4 mt-2 mt-sm-0 order-sm-2">
+                      <p class="fs-sm text-light-emphasis mb-sm-4"><%= result[1][0].name %></p>
+                      <a class="btn btn-primary" href="/product?id=<%= result[1][0].id %>">
+                        From <%= result[1][0].net_amount %>
+                        <i class="ci-arrow-up-right fs-base ms-1 me-n1"></i>
+                      </a>
                     </div>
-                  </div>
+                    <div class="position-relative z-1 w-100 align-self-end order-sm-1" style="max-width: 416px">
+                      <div class="ratio rtl-flip" style="--cz-aspect-ratio: calc(320 / 416 * 100%)">
+                        <img src="/images/<%= result[1][0].image %>" alt="Product Image">
+                      </div>
+                    </div>
+                  <% } else { %>
+                    <p class="text-center text-danger">No products found.</p>
+                  <% } %>
+                  
+                
                 </div>
               </div>
 
@@ -144,10 +148,10 @@
                       </button>
                       <ul class="dropdown-menu dropdown-menu-end fs-xs p-2" style="min-width: auto">
                         <li>
-                          <a class="dropdown-item" href="#!">
+                          <button class="dropdown-item" onclick="addToWishlist('<%=result[1][i].id%>')">
                             <i class="ci-heart fs-sm ms-n1 me-2"></i>
                             Add to Wishlist
-                          </a>
+                          </button>
                         </li>
                        
                       </ul>

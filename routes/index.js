@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var upload = require('./multer');
+const util = require("util");
 var pool = require('./pool')
+queryAsync = util.promisify(pool.query).bind(pool);
+
 var table = 'category';
 const fs = require("fs");
 const fetch = require("node-fetch");
@@ -164,12 +167,53 @@ router.get('/cancel-order',(req,res)=>{
 
 
 
+router.get('/replacement-order',(req,res)=>{
+  pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname ,
+  (select u.email from users u where u.id = b.usernumber) as usermobilenumber,
+  (select r.issue from replacements r where r.order_id = b.id and r.product_id = b.booking_id) as issues,
+  (select r.video from replacements r where r.order_id = b.id and r.product_id = b.booking_id) as video
+  
+  from booking b where b.status = 'replacement' order by id desc `,(err,result)=>{
+    if(err) throw err;
+    else res.render('replacement-orders',{result:result})
+  })
+})
+
+
+
+router.get('/replacement-accepted-order',(req,res)=>{
+  pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname ,
+  (select u.email from users u where u.id = b.usernumber) as usermobilenumber
+  
+  from booking b where b.status = 'replacement accept' order by id desc `,(err,result)=>{
+    if(err) throw err;
+    else res.render('show-orders',{result:result})
+  })
+})
+
+
+
+router.get('/replacement-reject-order',(req,res)=>{
+  pool.query(`select  b.* , (select p.name from product p where p.id = b.booking_id) as productname ,
+  (select u.email from users u where u.id = b.usernumber) as usermobilenumber
+  
+  from booking b where b.status = 'replacement reject' order by id desc `,(err,result)=>{
+    if(err) throw err;
+    else res.render('show-orders',{result:result})
+  })
+})
+
+
 router.get('/purchase-report',(req,res)=>{
   pool.query(`select * from cancel_booking order by id desc `,(err,result)=>{
     if(err) throw err;
     else res.render('purchase-report',{result:result})
   })
 })
+
+
+
+
 
 
 router.get('/sales-report',(req,res)=>{
@@ -295,6 +339,65 @@ router.get('/shop/all-collections',(req,res)=>{
 
 
 
+
+  router.get('/search',fetchCartData,(req,res)=>{
+
+    if(req.session.usernumber){
+      var query = `select * from category order by id desc;`
+      var query1 = `SELECT p.*,
+      (SELECT m.net_amount FROM product_manage m WHERE m.productid = p.id) AS net_amount,
+      (SELECT m.quantity FROM product_manage m WHERE m.productid = p.id) AS quantity,
+      (SELECT m.price FROM product_manage m WHERE m.productid = p.id) AS price,
+      (SELECT m.discount FROM product_manage m WHERE m.productid = p.id) AS discount
+    FROM product p
+    WHERE (p.name LIKE '%${req.query.q}%' OR p.description LIKE '%${req.query.q}%')
+    AND (SELECT m.net_amount FROM product_manage m WHERE m.productid = p.id) IS NOT NULL
+    ORDER BY p.id DESC;
+  `;
+    var query2 = `SELECT * FROM category WHERE name LIKE '%${req.query.q}%';`;
+      var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
+    var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
+    var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
+    var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
+
+    
+      pool.query(query+query1+query2+query6+query7+query8+query9,(err,result)=>{
+        if(err) throw err;
+        else if(result[1][0]) res.render('all-shop',{result:result,login:true,title:'Most Loved',cartData:req.cartData})
+        else  res.render('all-shop',{result,login:true,title:'Most Loved',cartData:req.cartData})
+      })
+    }
+    else{
+      var query = `select * from category order by id desc;`
+      var query1 = `SELECT p.*,
+        (SELECT m.net_amount FROM product_manage m WHERE m.productid = p.id) AS net_amount,
+        (SELECT m.quantity FROM product_manage m WHERE m.productid = p.id) AS quantity,
+        (SELECT m.price FROM product_manage m WHERE m.productid = p.id) AS price,
+        (SELECT m.discount FROM product_manage m WHERE m.productid = p.id) AS discount
+      FROM product p
+      WHERE (p.name LIKE '%${req.query.q}%' OR p.description LIKE '%${req.query.q}%')
+      AND (SELECT m.net_amount FROM product_manage m WHERE m.productid = p.id) IS NOT NULL
+      ORDER BY p.id DESC;
+    `;
+      var query2 = `SELECT * FROM category WHERE name LIKE '%${req.query.q}%';`;
+      var query6 = `select * from users where id =  'null';`
+    var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
+    var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
+    var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
+
+    
+      pool.query(query+query1+query2+query6+query7+query8+query9,(err,result)=>{
+         if(err) throw err;
+        else if(result[1][0]) res.render('all-shop',{result:result,login:false,title:'Most Loved',cartData:req.cartData})
+        else  res.render('all-shop',{result,login:false,title:'Most Loved',cartData:req.cartData})
+      })
+    }
+    
+      
+     
+    })
+
+
   router.get('/category',fetchCartData,(req,res)=>{
 
     if(req.session.usernumber){
@@ -350,6 +453,13 @@ router.get('/shop/all-collections',(req,res)=>{
       
      
     })
+
+
+
+
+   
+
+    
 
 
 
@@ -420,9 +530,44 @@ router.get('/product',fetchCartData,(req,res)=>{
      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
      var query10 = `select * from product_manage where productid = '${req.query.id}';`
      var query11 = `select * from productimages where productid = '${req.query.id}';`
-      pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
+     var query12 = `SELECT r.* , (select b.name from booking b where b.orderid = r.order_id order by id desc limit 1) as username FROM reviews r WHERE r.product_id = '${req.query.id}' order by id desc;`;
+     var query13 = `SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = '${req.query.id}';`;
+     var query14 = `SELECT rating, COUNT(rating) AS count FROM reviews WHERE product_id = '${req.query.id}' GROUP BY rating ORDER BY rating ASC;`;
+       pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11+query12+query13+query14,(err,result)=>{
         if(err) throw err;
-        else res.render('view-product', { title: 'Express',login:true, result : result,sizerequest:req.query.size,title:result[1][0].name,cartData:req.cartData});
+        else{
+
+          let ratingsData = {};
+          let totalReviews = 0;
+      
+          // Process result[14] which contains the rating counts
+          if (result[11] && result[11].length > 0) {
+              result[11].forEach(row => {
+                  ratingsData[row.rating] = row.count;
+                  totalReviews += row.count;
+              });
+          }
+      
+          // Calculate percentage for each star rating (1-5)
+          let ratingsPercentages = {};
+          for (let i = 1; i <= 5; i++) {
+              ratingsPercentages[i] = totalReviews > 0 ? (ratingsData[i] || 0) / totalReviews * 100 : 0;
+          }
+
+
+          res.render('view-product', {
+            title: 'Express',
+            login: true,
+            result: result,
+            sizerequest: req.query.size,
+            title: result[1][0].name,
+            cartData: req.cartData,
+            ratingsData: ratingsData,
+            ratingsPercentages: ratingsPercentages,
+            totalReviews: totalReviews
+        });
+
+        } 
       })
       
   
@@ -453,12 +598,48 @@ router.get('/product',fetchCartData,(req,res)=>{
      var query9 = `select * from wishlist_name where usernumber = '${req.session.ipaddress}';`
      var query10 = `select * from product_manage where productid = '${req.query.id}';`
      var query11 = `select * from productimages where productid = '${req.query.id}';`
+     var query12 = `SELECT r.* , (select b.name from booking b where b.orderid = r.order_id order by id desc limit 1) as username FROM reviews r WHERE r.product_id = '${req.query.id}' order by id desc;`;
 
+     var query13 = `SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = '${req.query.id}';`;
+     var query14 = `SELECT rating, COUNT(rating) AS count FROM reviews WHERE product_id = '${req.query.id}' GROUP BY rating ORDER BY rating ASC;`;
+     
 
-      pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
+      pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11+query12+query13+query14,(err,result)=>{
         if(err) throw err;
-         else res.render('view-product', { title: 'Express',login:false , result : result,sizerequest:req.query.size,title:result[1][0].name,cartData:req.cartData});
-  // else res.json(result)
+        else{
+
+          let ratingsData = {};
+          let totalReviews = 0;
+      
+          // Process result[14] which contains the rating counts
+          if (result[11] && result[11].length > 0) {
+              result[11].forEach(row => {
+                  ratingsData[row.rating] = row.count;
+                  totalReviews += row.count;
+              });
+          }
+      
+          // Calculate percentage for each star rating (1-5)
+          let ratingsPercentages = {};
+          for (let i = 1; i <= 5; i++) {
+              ratingsPercentages[i] = totalReviews > 0 ? (ratingsData[i] || 0) / totalReviews * 100 : 0;
+          }
+
+
+          res.render('view-product', {
+            title: 'Express',
+            login: true,
+            result: result,
+            sizerequest: req.query.size,
+            title: result[1][0].name,
+            cartData: req.cartData,
+            ratingsData: ratingsData,
+            ratingsPercentages: ratingsPercentages,
+            totalReviews: totalReviews
+        });
+
+        } 
+
       })
   
     }
@@ -2005,7 +2186,8 @@ router.post('/order-now', async (req, res) => {
       body['date'] = today;
 
       // Fetch cart data and process the order
-      pool.query(`SELECT c.* , (select p.name from product p where p.id = c.booking_id) as product_name FROM cart c WHERE c.usernumber = '${req.session.ipaddress}'`, async (err, result) => {
+      pool.query(`SELECT c.* ,
+         (select p.name from product p where p.id = c.booking_id) as product_name FROM cart c WHERE c.usernumber = '${req.session.usernumber}'`, async (err, result) => {
         if (err) throw err;
       console.log('result fetch',result)
         const data = result.map((item) => ({
@@ -2134,7 +2316,7 @@ router.get('/myorder',fetchCartData,(req,res)=>{
     (select p.image from product p where p.id = b.booking_id) as bookingimage,
     (select u.email from users u where u.id = b.usernumber) as usermobilenumber
 
-    from booking b where b.number = '${req.session.usernumber}' and status!='Cancel' order by id desc;`
+    from booking b where b.number = '${req.session.usernumber}' order by id desc;`
     var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
@@ -2235,64 +2417,7 @@ router.get('/myorder/cancel',(req,res)=>{
 
 
 
-router.get('/search',(req,res)=>{
-  // console.log(req.query.search)
-  
-  if(req.session.usernumber){
-    var query = `select * from category order by id desc;`
-    var query1 = `select p.* ,
-    (select m.net_amount from product_manage m where m.productid = p.id and m.sizeid = 'S') as net_amount,
-    (select m.quantity from product_manage m where m.productid = p.id and m.sizeid = 'S') as quantity
-  
-    from product p where p.keywords Like '%${req.query.search_query}%' and (select m.net_amount from product_manage m where m.productid = p.id and m.sizeid = 'S') is not null;`
-  
-    
-    var query2 = `select * from product where keywords Like '%${req.query.search_query}%';`
-    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
-      var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
-      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
-      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
-  
-  
-    pool.query(query+query1+query2+query6+query7+query8+query9,(err,result)=>{
-      if(err) throw err;
-      else if(result[1][0]) res.render('shop',{result:result,login:true,title:req.query.search_query})
-       else  res.render('not_found',{result,login:true,searchname:req.query.search_query,title:'Search'})
-      // else res.json(result)
-    })
-  }
-  else{
 
-    var query = `select * from category order by id desc;`
-
-    var query1 = `select p.* ,
-    (select m.net_amount from product_manage m where m.productid = p.id and m.sizeid = 'S') as net_amount,
-    (select m.quantity from product_manage m where m.productid = p.id and m.sizeid = 'S') as quantity
-  
-    from product p where p.keywords Like '%${req.query.search_query}%' and (select m.net_amount from product_manage m where m.productid = p.id and m.sizeid = 'S') is not null;`
-  
-    
-    var query2 = `select * from product where keywords Like '%${req.query.search_query}%';`
-
-
-
-    var query6 = `select * from users where id = '84';`
-      var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
-      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
-      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
-  
-  
-    pool.query(query+query1+query2+query6+query7+query8+query9,(err,result)=>{
-       if(err) throw err;
-      else if(result[1][0]) res.render('shop',{result:result,login:false,title:req.query.search_query})
-      else  res.render('not_found',{result,login:true,searchname:req.query.search_query,title:'Search'})
-
-    })
-  }
-  
-    
-   
-  })
 
 
 
@@ -3315,44 +3440,57 @@ router.post('/quename/submit',(req,res)=>{
 })
 
 
+// router.get('/invoice',(req,res)=>{
+//   if(req.session.usernumber){
+//     var query = `select * from category order by id desc;`
+//     var query1 = `select c.*,
+//     (select p.name from product p where p.id = c.booking_id) as bookingname,
+//     (select p.image from product p where p.id = c.booking_id) as bookingimage,
+//     (select u.email from users u where u.id = c.usernumber) as usermobilenumber,
+//     (select a.address from address a where a.id = c.address ) as useraddress1,
+//     (select a.city from address a where a.id = c.address ) as usercity
+
+
+
+//     from booking c where c.orderid = '${req.query.orderid}';`
+//     var query10= `select sum(price) as totalamount from booking where orderid = '${req.query.orderid}';`
+
+
+//     var query2 = `select * from category where id = '${req.query.id}';`
+//     var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
+//       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
+//       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
+//       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
+
+
+  
+  
+//     pool.query(query+query1+query2+query6+query7+query8+query9+query10,(err,result)=>{
+//       if(err) throw err;
+//        else res.render('invoice',{login:true,result,title:'Invoice'})
+//       // else res.json(result)
+//     })
+//   }
+//   else{
+//     res.redirect('/login')
+//   }
+// })
+
+
+
 router.get('/invoice',(req,res)=>{
-  if(req.session.usernumber){
-    var query = `select * from category order by id desc;`
-    var query1 = `select c.*,
-    (select p.name from product p where p.id = c.booking_id) as bookingname,
-    (select p.image from product p where p.id = c.booking_id) as bookingimage,
-    (select u.email from users u where u.id = c.usernumber) as usermobilenumber,
-    (select a.address from address a where a.id = c.address ) as useraddress1,
-    (select a.address2 from address a where a.id = c.address ) as useraddress2,
-    (select a.city from address a where a.id = c.address ) as usercity,
-    (select a.postcode from address a where a.id = c.address ) as userpostcode,
-    (select a.id_state from address a where a.id = c.address ) as userstate,
-    (select a.id_country from address a where a.id = c.address ) as usercountry
-
-
-
-    from booking c where c.orderid = '${req.query.orderid}';`
-    var query10= `select sum(price) as totalamount from booking where orderid = '${req.query.orderid}';`
-
-
-    var query2 = `select * from category where id = '${req.query.id}';`
-    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
-      var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
-      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
-      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
-
-
-  
-  
-    pool.query(query+query1+query2+query6+query7+query8+query9+query10,(err,result)=>{
-      if(err) throw err;
-       else res.render('invoice',{login:true,result,title:'Invoice'})
-      // else res.json(result)
-    })
-  }
-  else{
-    res.redirect('/login')
-  }
+  var query1 = `select c.*,
+  (select p.name from product p where p.id = c.booking_id) as bookingname,
+  (select p.image from product p where p.id = c.booking_id) as bookingimage,
+  (select u.email from users u where u.id = c.usernumber) as usermobilenumber,
+  (select a.address from address a where a.id = c.address ) as useraddress1,
+  (select a.city from address a where a.id = c.address ) as usercity
+  from booking c where c.orderid = '${req.query.orderid}';`
+  var query2= `select sum(price) as totalamount from booking where orderid = '${req.query.orderid}';`
+  pool.query(query1+query2,(err,result)=>{
+    if(err) throw err;
+    else res.render('invoice',{result})
+  })
 })
 
 
@@ -4263,8 +4401,228 @@ router.post('/save-myaddress',(req,res)=>{
 
 
 
+
+// Submit Replacement Request
+router.post("/submit-replacement", upload.single("video"), (req, res) => {
+  const { orderId, issue, productId } = req.body;
+  const videoPath = req.file ? req.file.path : null;
+
+  if (!videoPath) {
+    return res.status(400).json({ message: "Video is required" });
+  }
+
+  // Check if replacement request already exists
+  const checkQuery = `SELECT * FROM replacements WHERE order_id = ? AND product_id = ?`;
+
+  pool.query(checkQuery, [orderId, productId], (err, results) => {
+    if (err) {
+      console.error("Error checking existing replacement:", err);
+      return res.status(500).json({ message: "Error checking replacement request" });
+    }
+
+    if (results.length > 0) {
+      return res.status(400).json({ message: "Replacement request already exists" });
+    }
+
+    // Insert replacement request into the database
+    const insertQuery = `INSERT INTO replacements (order_id, video, issue, status, product_id) VALUES (?, ?, ?, ?, ?)`;
+    const updateQuery = `UPDATE booking SET status = 'replacement' WHERE id = ? AND booking_id = ?`;
+
+    pool.query(insertQuery, [orderId, videoPath, issue, "Pending", productId], (err, result) => {
+      if (err) {
+        console.error("Error inserting replacement:", err);
+        return res.status(500).json({ message: "Error submitting replacement" });
+      }
+
+      // If insertion is successful, update booking status
+      pool.query(updateQuery, [orderId, productId], (err) => {
+        if (err) {
+          console.error("Error updating booking status:", err);
+          return res.status(500).json({ message: "Error updating booking status" });
+        }
+
+        res.json({ message: "Replacement request submitted successfully" });
+      });
+    });
+  });
+});
+
+// Submit Review
+router.post("/submit-review", (req, res) => {
+  const { orderId, rating, review, productId } = req.body;
+
+  // Check if review already exists
+  const checkQuery = `SELECT * FROM reviews WHERE order_id = ? AND product_id = ?`;
+
+  pool.query(checkQuery, [orderId, productId], (err, results) => {
+    if (err) {
+      console.error("Error checking existing review:", err);
+      return res.status(500).json({ message: "Error checking review" });
+    }
+
+    if (results.length > 0) {
+      return res.status(400).json({ message: "Review already exists" });
+    }
+
+    // Insert new review
+    const insertQuery = `INSERT INTO reviews (order_id, rating, review, product_id) VALUES (?, ?, ?, ?)`;
+
+    pool.query(insertQuery, [orderId, rating, review, productId], (err) => {
+      if (err) {
+        console.error("Error inserting review:", err);
+        return res.status(500).json({ message: "Error submitting review" });
+      }
+
+      res.json({ message: "Review submitted successfully" });
+    });
+  });
+});
+
+
+
+
+
+router.post("/accept-replacement", async (req, res) => {
+  const { orderId, productId } = req.body;
+  console.log(req.body);
+
+  try {
+    // Update status in replacements table
+    await queryAsync(
+      `UPDATE replacements SET status = 'Accepted' WHERE order_id = ? AND product_id = ?`,
+      [orderId, productId]
+    );
+
+    // Update status in booking table
+    await queryAsync(
+      `UPDATE booking SET status = 'replacement accept' WHERE id = ? AND booking_id = ?`,
+      [orderId, productId]
+    );
+
+    // Fetch booking details based on orderId and payment method 'prepaid'
+    const bookingResult = await queryAsync(
+      `SELECT b.*, 
+      (select p.name from product p where p.id = b.booking_id) as productname
+      FROM booking b WHERE id = ?`,
+      [orderId]
+    );
+
+    console.log("bookingResult", bookingResult);
+
+    if (!bookingResult.length) {
+      return res.status(404).json({ message: "No booking found with prepaid payment mode" });
+    }
+
+    const bookingData = bookingResult[0]; // Fetch first matching record
+
+    const fullAddress = bookingData.address || "";
+    const addressParts = fullAddress.split(",");
+    
+    // Extract pincode (last element)
+    const billing_pincode = addressParts.length > 0 ? addressParts[addressParts.length - 1].trim() : "";
+    
+    // Extract state (second-last element)
+    const billing_state = addressParts.length > 1 ? addressParts[addressParts.length - 2].trim() : "";
+    
+    // Extract city (third-last element)
+    const billing_city = addressParts.length > 2 ? addressParts[addressParts.length - 3].trim() : "";
+    
+    // Remaining part is the main address
+    const billing_address = addressParts.slice(0, addressParts.length - 3).join(",").trim();
+
+    // Construct shippingOrderDetails using bookingData
+    const shippingOrderDetails = {
+      order_id: bookingData.orderid,
+      order_date: bookingData.order_date,
+      pickup_location: "store_location",
+      billing_customer_name: bookingData.name,
+      billing_last_name: "",
+      billing_address: billing_address,
+      billing_address_2: "",
+      billing_city: billing_city,
+      billing_pincode: billing_pincode,
+      billing_state: billing_state,
+      billing_country: "India",
+      billing_email: bookingData.email || "",
+      billing_phone: bookingData.number,
+      shipping_is_billing: true,
+      order_items: [
+        {
+          name: bookingData.productname || "Unknown",
+          sku: bookingData.sku || "0",
+          units: bookingData.quantity,
+          selling_price: bookingData.price,
+        },
+      ],
+      payment_method: "prepaid",
+      shipping_charges: 0,
+      sub_total: bookingData.price * bookingData.quantity,
+      length: 10,
+      breadth: 10,
+      height: 10,
+      weight: 1.0,
+    };
+
+    console.log("shippingOrderDetails", shippingOrderDetails);
+
+    // Create shipping order
+    const token = await deliveryApi.shippingAuthLogin();
+    const shippingResponse = await deliveryApi.createShippingOrder(shippingOrderDetails, token);
+    console.log("Shipping Order Response:", shippingResponse);
+
+    res.json({ message: "Replacement request accepted successfully!" });
+  } catch (error) {
+    console.error("Error processing replacement request:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
+router.post("/reject-replacement", (req, res) => {
+  const { orderId, productId } = req.body;
+
+  console.log(req.body)
+
+  pool.query(
+    `UPDATE replacements SET status = 'Rejected' WHERE order_id = ? AND product_id = ?`,
+    [orderId, productId],
+    (err, result) => {
+      if (err) return res.status(500).json({ message: "Error updating status" });
+
+      pool.query(
+        `UPDATE booking SET status = 'replacement reject' WHERE id = ? AND booking_id = ?`,
+        [orderId, productId],
+        (err, result) => {
+          if (err) return res.status(500).json({ message: "Error updating booking status" });
+          res.json({ message: "Replacement request rejected successfully!" });
+        }
+      );
+    }
+  );
+});
+
+
+
 // Payment Gateway Pages
 
+
+
+router.get("/api/search", async (req, res) => {
+  const query = req.query.query;
+  if (!query) return res.status(400).json({ message: "Query is required" });
+
+  try {
+    const results = await queryAsync(
+      "SELECT * FROM product WHERE name LIKE ? OR description LIKE ?",
+      [`%${query}%`, `%${query}%`]
+    );
+    res.json(results[0]); // Send the results
+  } catch (error) {
+    console.error("Search Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 

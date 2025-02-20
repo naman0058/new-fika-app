@@ -4,6 +4,7 @@ var router = express.Router();
 var pool = require('./pool')
 var table = 'admin';
 const request = require('request');
+var deliveryApi = require('./delivery');
 
 
 var today = new Date();
@@ -99,32 +100,117 @@ else res.render('dashboard',{result:result})
 
 
 
-router.get('/update-status',(req,res)=>{
 
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    
-    today = mm + '/' + dd + '/' + yyyy;
+// Utility function to get today's date in MM/DD/YYYY format
+function getFormattedDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+}
 
-    pool.query(`update booking set status = '${req.query.status}' where id = '${req.query.id}'`,(err,result)=>{
-        if(err) throw err;
-        else {
-            pool.query(`select * from booking where id = '${req.query.id}'`,(err,result)=>{
-                if(err) throw err;
-                else {
-                    pool.query(`insert into alert(usernumber,status,orderid,date) values ('${result[0].usernumber}' , '${req.query.status}' , '${result[0].orderid}','${today}')`,(err,result)=>{
-                        if(err) throw err;
-                        // else res.redirect('/admin/dashboard')
-                        else res.json({msg:'success'})
-                    })
+// Route to update order status
+router.get('/update-status', async (req, res) => {
+    try {
+        const { status, id } = req.query;
+        console.log(req.querya)
+        if (!status || !id) return res.status(400).json({ error: 'Missing status or order ID' });
+
+        const today = getFormattedDate();
+
+        if (status === 'Cancel') {
+            // Fetch Shiprocket order ID
+            pool.query(`SELECT * FROM shipping WHERE channel_order_id = ?`, [id], async (err, result) => {
+                if (err) {
+                    console.error('Database error:', err);
+                    return res.status(500).json({ error: 'Database query failed' });
                 }
-            })
-        }
 
-    })
-})
+                console.log('result',result)
+
+                if (result.length === 0) return res.status(404).json({ error: 'Order not found in shipping' });
+
+                const shiprocketId = result[0].order_id;
+                const token = await deliveryApi.shippingAuthLogin();
+                const shippingResponse = await deliveryApi.cancelOrders(token, [shiprocketId]);
+
+                console.log('Shipping Order Response:', shippingResponse);
+
+                // Update booking status
+                pool.query(`UPDATE booking SET status = ? WHERE orderid = ?`, [status, id], (err) => {
+                    if (err) {
+                        console.error('Error updating booking status:', err);
+                        return res.status(500).json({ error: 'Failed to update booking status' });
+                    }
+
+                    // Fetch user details
+                    pool.query(`SELECT * FROM booking WHERE orderid = ?`, [id], (err, result) => {
+                        if (err) {
+                            console.error('Error fetching booking details:', err);
+                            return res.status(500).json({ error: 'Failed to fetch booking' });
+                        }
+
+                        if (result.length === 0) return res.status(404).json({ error: 'Booking not found' });
+
+                        const { usernumber, orderid } = result[0];
+
+                        // Insert alert
+                        pool.query(
+                            `INSERT INTO alert (usernumber, status, orderid, date) VALUES (?, ?, ?, ?)`,
+                            [usernumber, status, orderid, today],
+                            (err) => {
+                                if (err) {
+                                    console.error('Error inserting alert:', err);
+                                    return res.status(500).json({ error: 'Failed to insert alert' });
+                                }
+                                res.json({ msg: 'success' });
+                            }
+                        );
+                    });
+                });
+            });
+        } else {
+            // Update booking status for non-cancel cases
+            pool.query(`UPDATE booking SET status = ? WHERE id = ?`, [status, id], (err) => {
+                if (err) {
+                    console.error('Error updating booking status:', err);
+                    return res.status(500).json({ error: 'Failed to update booking status' });
+                }
+
+                // Fetch user details
+                pool.query(`SELECT * FROM booking WHERE id = ?`, [id], (err, result) => {
+                    if (err) {
+                        console.error('Error fetching booking details:', err);
+                        return res.status(500).json({ error: 'Failed to fetch booking' });
+                    }
+
+                    if (result.length === 0) return res.status(404).json({ error: 'Booking not found' });
+
+                    const { usernumber, orderid } = result[0];
+
+                    // Insert alert
+                    pool.query(
+                        `INSERT INTO alert (usernumber, status, orderid, date) VALUES (?, ?, ?, ?)`,
+                        [usernumber, status, orderid, today],
+                        (err) => {
+                            if (err) {
+                                console.error('Error inserting alert:', err);
+                                return res.status(500).json({ error: 'Failed to insert alert' });
+                            }
+                            res.json({ msg: 'success' });
+                        }
+                    );
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 
 

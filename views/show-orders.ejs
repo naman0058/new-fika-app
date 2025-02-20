@@ -15,7 +15,7 @@
                     <table id="myTable" class="table table-bordered table-striped mb-0">
                     <thead>
                     <tr>
-                    
+                    <th>Order Id</th>
                     <th>Name</th>
                     <th>Mobile</th>
                     <th>Address</th>
@@ -24,6 +24,8 @@
                     <th>Amount</th>
                   <th>Status</th>
                     <th>Date</th>
+                    <th>Invoice</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -32,6 +34,7 @@
 
                         <% for(i=0;i<result.length;i++){ %>
                   <tr>
+                    <td><%=result[i].orderid%></td>
                     <td><%=result[i].name%></td>
                     <td><%=result[i].number%></td>
                     <td><%=result[i].address%>
@@ -39,8 +42,21 @@
                     <td><%=result[i].productname%></td>
                     <td><%=result[i].quantity%></td>
                     <td><%=result[i].price%></td>
-                    <td><%=result[i].status%></td>
+
+                    <% if(result[i].status == 'replacement'){ %>
+                    <td>Issue : <%=result[i].issues%>
+                      <% let video = result[i].video.replace("public\\", "") %>
+
+                    <a href="<%=video%>">View Video</a>
+                    </td>
+
+                    <%} else {%>
+                      <td><%=result[i].status%></td>
+
+                      <% } %>
                     <td><%=result[i].date%></td>
+                    <td><a href="/invoice?orderid=<%=result[i].orderid%>">View Invoice</a></td>
+
                   
                     </tr>
 
