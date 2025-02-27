@@ -30,6 +30,8 @@
                       <th scope="col" class="py-3 d-none d-md-table-cell">
                         <button type="button" class="btn orders-sort fw-normal text-body p-0" data-sort="total">Invoice</button>
                       </th>
+                      <th scope="col" class="py-3 d-none d-md-table-cell"><span class="text-body fw-normal">Track Order</span></th>
+
                       <th scope="col" class="py-3">&nbsp;</th>
                     </tr>
                   </thead>
@@ -90,8 +92,16 @@
               
                       <td class="fw-medium py-3 d-none d-md-table-cell">
                        <a href="/invoice?orderid=<%=order.orderid%>">View Invoice</a>
+
+                       <% if(order.status == 'Dispatched'){%>
+                      <br/><br/> <a href="<%=order.awb%>">Track Order</a>
+                       <% } %>
+
                         <span class="total d-none"><%= order.price %></span>
                       </td>
+
+
+                      
               
                       <td class="py-3 pe-0">
                         <span class="d-flex align-items-center justify-content-end position-relative gap-1 gap-sm-2 ms-n2 ms-sm-0">

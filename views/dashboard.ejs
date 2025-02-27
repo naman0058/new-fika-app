@@ -219,7 +219,9 @@
                         <th>Progress</th>
                         <th>Price</th>
                         <th>Invoice</th>
+                        <th>Tracking Link</th>
                         <th>Status</th>
+
                         
                       </tr>
 
@@ -244,8 +246,17 @@
                        
                         <td>Rs. <%=result[8][i].price%></td>
                         <td><a href="/invoice?orderid=<%=result[8][i].orderid%>">View Invoice</a></td>
+                        
+<% if(result[8][i].status=='Dispatched') { %>
+                        
+                        <td><a href="<%=result[8][i].awb%>">Track Order</a></td>
+
+<% } else { %>
+
+  <td>-</td>
 
 
+  <% } %>
                      
 
 
@@ -255,7 +266,7 @@
 <% if(result[8][i].status=='pending') { %>
   <td> <button type="button" id="<%=result[8][i].id%>" status="Order Accepted" class="btn btn-primary update-status">Order Accepted</button></td>
 
-  <% } else if(result[8][i].status=='Order Accepted') { %>
+  <% } else if(result[8][i].status=='Order Accepted' || result[8][i].status=='replacement accept') { %>
 
  <td> <button type="button" id="<%=result[8][i].id%>" status="Dispatched" class="btn btn-primary update-status">Dispatched</button></td>
 
@@ -488,26 +499,28 @@ $('#charges_set').click(function(){
 
 
 
-$('.update-status').click(function(){
-  let status = $(this).attr('status')
-  let id = $(this).attr('id')
+$('.update-status').click(function () {
+  let status = $(this).attr('status');
+  let id = $(this).attr('id');
 
-  var txt;
-  var r = confirm("Are you sure you want to change status");
-  if (r == true) {
-   
-
-    $.getJSON('/admin/update-status',{id,status},data=>{
-   window.location.reload()
-  })
-
-
+  if (status == 'Dispatched') {
+    let awb = prompt("Enter Tracking Link:");
+    if (awb) {
+      $.getJSON('/admin/update-status', { id, status, awb }, data => {
+        window.location.reload();
+      });
+    } else {
+      alert("Tracking Link is required to proceed.");
+    }
   } else {
-    txt = "You pressed Cancel!";
+    var r = confirm("Are you sure you want to change status?");
+    if (r == true) {
+      $.getJSON('/admin/update-status', { id, status }, data => {
+        window.location.reload();
+      });
+    }
   }
-
- 
-})
+});
 
 
 </script>

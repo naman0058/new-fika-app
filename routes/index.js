@@ -4,6 +4,10 @@ var upload = require('./multer');
 const util = require("util");
 var pool = require('./pool')
 queryAsync = util.promisify(pool.query).bind(pool);
+const emailTemplates = require('./emailTemplates'); // Email templates
+const verify = require('./verify'); 
+
+
 
 var table = 'category';
 const fs = require("fs");
@@ -1199,16 +1203,16 @@ router.get('/checkout',fetchCartData,(req,res)=>{
     (select p.quantity from product_manage p where p.productid = c.booking_id and p.sizeid = c.size) as availablequantity
 
     
-     from cart c where c.usernumber = '${req.session.ipaddress}';`
-   var query2 = `select sum(price) as totalprice from cart where usernumber = '${req.session.ipaddress}';`              
-   var query3 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
-
+     from cart c where c.usernumber = '${req.session.usernumber}';`
+   var query2 = `select sum(price) as totalprice from cart where usernumber = '${req.session.usernumber}';`              
+   var query3 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
    var query6 = `select * from users where id = '84';`
-    var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
-    var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
+    var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
+    var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
+    var query9 = `select * from address where usernumber = '${req.session.usernumber}';`
 
 
-    pool.query(query+query1+query2+query3+query6+query7+query8,(err,result)=>{
+    pool.query(query+query1+query2+query3+query6+query7+query8+query9,(err,result)=>{
       if(err) throw err;
       else{
      
@@ -1248,6 +1252,7 @@ router.get('/checkout',fetchCartData,(req,res)=>{
    var query6 = `select * from users where id = '84';`
     var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
     var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
+    var query9 = `select * from address where usernumber = '${req.session.ipaddress}';`
 
 
     pool.query(query+query1+query2+query3+query6+query7+query8,(err,result)=>{
@@ -3495,34 +3500,108 @@ router.get('/invoice',(req,res)=>{
 
 
 
-router.get('/confirmation',fetchCartData,(req,res)=>{
+// router.get('/confirmation',fetchCartData,(req,res)=>{
 
-  // res.json(req.session)
+//   // res.json(req.session)
 
-  if(req.session.usernumber){
-    var query = `select * from category order by id desc;`
-    var query1 = `select * from booking where number = '${req.session.usernumber}' order by id desc limit 1 ;`
-    var query2 = `select * from category where id = '${req.query.id}';`
-    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
-      var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
-      var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
-      var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
-      var query10 = `select * from coupon order by id desc limit 1;`
-      var query11 = `select p.* ,
-  (select m.net_amount from product_manage m where m.productid = p.id) as net_amount,
-  (select m.quantity from product_manage m where m.productid = p.id) as quantity
+//   if(req.session.usernumber){
+//     var query = `select * from category order by id desc;`
+//     var query1 = `select * from booking where number = '${req.session.usernumber}' order by id desc limit 1 ;`
+//     var query2 = `select * from category where id = '${req.query.id}';`
+//     var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
+//       var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
+//       var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
+//       var query9 = `select * from wishlist_name where usernumber = '${req.session.usernumber}';`
+//       var query10 = `select * from coupon order by id desc limit 1;`
+//       var query11 = `select p.* ,
+//   (select m.net_amount from product_manage m where m.productid = p.id) as net_amount,
+//   (select m.quantity from product_manage m where m.productid = p.id) as quantity
 
-  from product p order by p.id desc limit 2;`
-    pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
-      if(err) throw err;
-      else res.render('confirmation',{result,login:true,orderid:req.session.orderid,title:'Confirmation',cartData:req.cartData});
-      // else res.json(result)
-    })
+//   from product p order by p.id desc limit 2;`
+//     pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11,(err,result)=>{
+//       if(err) throw err;
+//       else res.render('confirmation',{result,login:true,orderid:req.session.orderid,title:'Confirmation',cartData:req.cartData});
+//       // else res.json(result)
+//     })
+//   }
+//   else {
+//     res.redirect('/login')
+//   }
+// })
+
+
+
+router.get('/confirmation', fetchCartData, (req, res) => {
+  if (!req.session.usernumber) {
+      return res.redirect('/login');
   }
-  else {
-    res.redirect('/login')
-  }
-})
+
+  const userNumber = req.session.usernumber;
+  const orderId = req.session.orderid;
+
+  // Queries
+  const query = `SELECT * FROM category ORDER BY id DESC;`;
+  const query1 = `SELECT * FROM booking WHERE number = ? ORDER BY id DESC LIMIT 1;`;
+  const query2 = `SELECT * FROM category WHERE id = ?;`;
+  const query6 = `SELECT * FROM users WHERE usernumber = ?;`;
+  const query7 = `SELECT SUM(quantity) AS counter FROM cart WHERE usernumber = ?;`;
+  const query8 = `SELECT COUNT(id) AS counter FROM wishlist WHERE usernumber = ?;`;
+  const query9 = `SELECT * FROM wishlist_name WHERE usernumber = ?;`;
+  const query10 = `SELECT * FROM coupon ORDER BY id DESC LIMIT 1;`;
+  const query11 = `
+      SELECT p.*, 
+          (SELECT m.net_amount FROM product_manage m WHERE m.productid = p.id) AS net_amount,
+          (SELECT m.quantity FROM product_manage m WHERE m.productid = p.id) AS quantity
+      FROM product p ORDER BY p.id DESC LIMIT 2;
+  `;
+
+  pool.query(query + query1 + query2 + query6 + query7 + query8 + query9 + query10 + query11, 
+      [userNumber, req.query.id, userNumber, userNumber, userNumber, userNumber], 
+      (err, result) => {
+          if (err) throw err;
+
+          // Extract necessary data
+          const userData = result[3][0]; // Users table
+          const orderData = result[1][0]; // Booking table
+
+          if (!userData || !orderData) {
+              return res.render('confirmation', { 
+                  result, login: true, orderid: orderId, title: 'Confirmation', cartData: req.cartData 
+              });
+          }
+
+          const userEmail = userData.email;
+          const username = userData.firstname;
+          const usernumber = userData.usernumber;
+          const adminEmail = "amitali910@gmail.com"; // Change this to the admin's email
+          const userSubject = emailTemplates.orderConfirmation.userSubject;
+          const adminSubject = emailTemplates.adminOrderConfirmation.adminSubject;
+
+          const userMessage = emailTemplates.orderConfirmation.userMessage(username, orderId, orderData.price);
+          const adminMessage = emailTemplates.adminOrderConfirmation.adminMessage(username,orderId, orderData.price,usernumber);
+
+          // Send emails in the background
+          setImmediate(async () => {
+              try {
+                  // Send confirmation email to user
+                  await verify.sendUserMail(userEmail, userSubject, userMessage);
+                  console.log('Order confirmation email sent to:', userEmail);
+
+                  // Send email to admin
+                  await verify.sendUserMail(adminEmail, adminSubject, adminMessage);
+                  console.log('Order details sent to admin:', adminEmail);
+              } catch (emailError) {
+                  console.error('Error sending order confirmation email:', emailError);
+              }
+          });
+
+          res.render('confirmation', { 
+              result, login: true, orderid: orderId, title: 'Confirmation', cartData: req.cartData 
+          });
+      }
+  );
+});
+
 
 
 
@@ -4554,7 +4633,7 @@ router.post("/accept-replacement", async (req, res) => {
           selling_price: bookingData.price,
         },
       ],
-      payment_method: "prepaid",
+      payment_method: "Prepaid",
       shipping_charges: 0,
       sub_total: bookingData.price * bookingData.quantity,
       length: 10,
