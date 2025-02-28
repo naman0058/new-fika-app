@@ -2955,7 +2955,7 @@ router.get('/make-order',(req,res)=>{
                 units: item.quantity,
                 selling_price: item.price,
               })),
-              payment_method: req.session.payment_mode,
+              payment_method: 'Prepaid',
               shipping_charges: 0,
               sub_total: data.reduce((sum, item) => sum + item.price * item.quantity, 0),
               length: 10,
