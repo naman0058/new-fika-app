@@ -7,31 +7,19 @@ const nodemailer = require('nodemailer');
 
 
 // Create a transporter for sending emails
-// const transporter = nodemailer.createTransport({
-//     host: 'smtpout.secureserver.net', // GoDaddy's SMTP server
-//     port: 465, // Secure port for SSL
-//     secure: true, // Use SSL
-//     auth: {
-//       user: 'info@fikaonline.in', // Your GoDaddy email address
-//       pass: 'FikaAmit@123', // Your GoDaddy email password
-//     },
-//   });
+const transporter = nodemailer.createTransport({
+    host: 'smtpout.secureserver.net', // GoDaddy's SMTP server
+    port: 465, // Secure port for SSL
+    secure: true, // Use SSL
+    auth: {
+      user: 'info@fikaonline.in', // Your GoDaddy email address
+      pass: 'Fika@1234', // Your GoDaddy email password
+    },
+  });
   
 
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.office365.com', // Use Microsoft 365 SMTP
-    port: 587, // Use TLS (not SSL)
-    secure: false, // false for TLS
-    auth: {
-      user: 'info@fikaonline.in', // Your GoDaddy Microsoft 365 email
-      pass: 'FikaAmit@123', // Use App Password (not normal password)
-    },
-    tls: {
-      ciphers: 'SSLv3',
-      rejectUnauthorized: false
-    }
-});
+
 
 // Test email sending
 transporter.verify((error, success) => {
@@ -44,7 +32,7 @@ transporter.verify((error, success) => {
 
 
 
-
+// sendUserMail('jnaman345@gmail.com','done','hi')
   
 
 
@@ -63,7 +51,7 @@ transporter.verify((error, success) => {
               // console.log('recipients',recipients)
               try {
                 const mailOptions = {
-                  from: 'info@filemakr.com',
+                  from: 'info@fikaonline.in',
                   to: email,
                   subject: subject,
                   html: `
