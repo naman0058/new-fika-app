@@ -54,6 +54,29 @@ async function createShippingOrder(orderDetails, token) {
 
 
 
+  async function createReplacementOrder(orderDetails, token) {
+    const config = {
+      method: 'post',
+      url: 'https://apiv2.shiprocket.in/v1/external/orders/create/exchange',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify(orderDetails),
+    };
+  
+    try {
+      const response = await axios(config);
+      console.error("Replacement order Response Return:", response.data);
+      return response.data; // Return the Shiprocket order response
+    } catch (error) {
+      console.error("Error creating shipping order:", error.response.data);
+      throw error;
+    }
+  }
+
+
+
   async function cancelOrders(token, orderIds) {
     try {
       const response = await axios.post(
@@ -80,5 +103,6 @@ async function createShippingOrder(orderDetails, token) {
   module.exports =
    { createShippingOrder,
     shippingAuthLogin,
-    cancelOrders 
+    cancelOrders ,
+    createReplacementOrder
     }

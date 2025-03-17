@@ -4611,42 +4611,69 @@ router.post("/accept-replacement", async (req, res) => {
 
     // Construct shippingOrderDetails using bookingData
     const shippingOrderDetails = {
-      order_id: bookingData.orderid,
+      exchange_order_id: 'EXC'+bookingData.orderid,
       order_date: bookingData.order_date,
-      pickup_location: "store_location",
-      billing_customer_name: bookingData.name,
-      billing_last_name: "",
-      billing_address: billing_address,
-      billing_address_2: "",
-      billing_city: billing_city,
-      billing_pincode: billing_pincode,
-      billing_state: billing_state,
-      billing_country: "India",
-      billing_email: bookingData.email || "",
-      billing_phone: bookingData.number,
-      shipping_is_billing: true,
+      seller_pickup_location_id: "4313057",
+      seller_shipping_location_id:"4313057",
+      return_order_id:'RTN'+bookingData.orderid,
+      buyer_shipping_first_name: bookingData.name,
+      buyer_shipping_last_name: "",
+      buyer_shipping_address: billing_address,
+      buyer_shipping_address_2: "",
+      buyer_shipping_city: billing_city,
+      buyer_shipping_pincode: billing_pincode,
+      buyer_shipping_state: billing_state,
+      buyer_shipping_country: "India",
+      buyer_shipping_email: bookingData.email || "",
+      buyer_shipping_phone: bookingData.number,
+
+
+
+      buyer_pickup_first_name: bookingData.name,
+      buyer_pickup_last_name: "",
+      buyer_pickup_address: billing_address,
+      buyer_pickup_address_2: "",
+      buyer_pickup_city: billing_city,
+      buyer_pickup_pincode: billing_pincode,
+      buyer_pickup_state: billing_state,
+      buyer_pickup_country: "India",
+      buyer_pickup_email: bookingData.email || "",
+      buyer_pickup_phone: bookingData.number,
+
+
+      // shipping_is_billing: true,
       order_items: [
         {
           name: bookingData.productname || "Unknown",
           sku: bookingData.sku || "0",
           units: bookingData.quantity,
           selling_price: bookingData.price,
+          hsn:bookingData.hsn || "123654789",
+          exchange_item_name:bookingData.productname || "Unknown",
+          exchange_item_sku: bookingData.sku || "0",
+
         },
       ],
       payment_method: "Prepaid",
       shipping_charges: 0,
       sub_total: bookingData.price * bookingData.quantity,
-      length: 10,
-      breadth: 10,
-      height: 10,
-      weight: 1.0,
+      return_length: 10,
+      return_breadth: 10,
+      return_height: 10,
+      return_weight: 1.0,
+      exchange_length: 10,
+      exchange_breadth: 10,
+      exchange_height: 10,
+      exchange_weight: 1.0,
+      return_reason:'29',
+      channel_id:"3296358"
     };
 
     console.log("shippingOrderDetails", shippingOrderDetails);
 
     // Create shipping order
     const token = await deliveryApi.shippingAuthLogin();
-    const shippingResponse = await deliveryApi.createShippingOrder(shippingOrderDetails, token);
+    const shippingResponse = await deliveryApi.createReplacementOrder(shippingOrderDetails, token);
     console.log("Shipping Order Response:", shippingResponse);
 
     res.json({ message: "Replacement request accepted successfully!" });
