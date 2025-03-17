@@ -41,7 +41,7 @@
               <i class="ci-star-filled text-warning"></i>
               <i class="ci-star-half text-warning"></i>
             </div>
-            <span class="text-body-tertiary fs-xs">68 reviews</span>
+            <span class="text-body-tertiary fs-xs"><%=result[9].length%> reviews</span>
           </a>
         </div>
       </section>
@@ -712,7 +712,7 @@ result[1][0].description = stripHtml(result[1][0].description);
                        
                       </ul>
                     </div>
-                    <a class="d-block rounded-top overflow-hidden p-3 p-sm-4" href="#!">
+                    <a class="d-block rounded-top overflow-hidden p-3 p-sm-4" href="/product?id=<%=result[2][i].id%>">
                       
                       <% if(result[2][i].discount > 0 ){ %>
 
@@ -737,7 +737,7 @@ result[1][0].description = stripHtml(result[1][0].description);
                       <span class="text-body-tertiary fs-xs">(14)</span>
                     </div> -->
                     <h3 class="pb-1 mb-2">
-                      <a class="d-block fs-sm fw-medium text-truncate" href="#!">
+                      <a class="d-block fs-sm fw-medium text-truncate" href="/product?id=<%=result[2][i].id%>">
                         <span class="animate-target"><%=result[2][i].name%>></span>
                       </a>
                     </h3>
