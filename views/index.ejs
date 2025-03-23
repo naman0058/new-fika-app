@@ -593,17 +593,13 @@
         <div class="row">
           <div class="col-lg-9 offset-lg-3">
             <div class="position-relative">
-              <span class="position-absolute top-0 start-0 w-100 h-100 rounded-5 d-none-dark rtl-flip" style="background: linear-gradient(90deg, #accbee 0%, #e7f0fd 100%)"></span>
-              <span class="position-absolute top-0 start-0 w-100 h-100 rounded-5 d-none d-block-dark rtl-flip" style="background: linear-gradient(90deg, #1b273a 0%, #1f2632 100%)"></span>
               <div class="row justify-content-center position-relative z-2">
-                <div class="col-xl-5 col-xxl-4 offset-xxl-1 d-flex align-items-center mt-xl-n3">
-
-                  <!-- Text content master slider -->
-                  <div class="swiper px-5 pe-xl-0 ps-xxl-0 me-xl-n5" data-swiper="{
+                <div class="col-xl-12 col-xxl-12 offset-xxl-1 d-flex align-items-center mt-xl-n3">
+                  <!-- Image slider -->
+                  <div class="swiper" data-swiper="{
                     &quot;spaceBetween&quot;: 64,
                     &quot;loop&quot;: true,
                     &quot;speed&quot;: 400,
-                    &quot;controlSlider&quot;: &quot;#sliderImages&quot;,
                     &quot;autoplay&quot;: {
                       &quot;delay&quot;: 5500,
                       &quot;disableOnInteraction&quot;: false
@@ -613,51 +609,18 @@
                     }
                   }">
                     <div class="swiper-wrapper">
-                     
-						<% for(i=0;i<result[1].length;i++) { %>
-						<div class="swiper-slide text-center text-xl-start pt-5 py-xl-5">
-                        <!-- <p class="text-body">Feel the real quality sound</p> -->
-                        <h2 class="display-4 pb-2 pb-xl-4"><%=result[1][i].tagline%></h2>
-                        <a class="btn btn-lg btn-primary" href="<%=result[1][i].link%>">
-                          Shop now
-                          <i class="ci-arrow-up-right fs-lg ms-2 me-n1"></i>
+                      <% for(i=0;i<result[1].length;i++) { %>
+                      <div class="swiper-slide text-center">
+                        <a href="<%=result[1][i].link%>">
+                          <img src="https://fikaonline.in/images/<%=result[1][i].image%>" alt="Image" class="img-fluid w-100" style="max-height: 400px; width: auto; object-fit: contain;border-radius: 10px;">
                         </a>
                       </div>
-                     <% } %>
-                     
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-9 col-sm-7 col-md-6 col-lg-5 col-xl-7">
-
-                  <!-- Binded images (controlled slider) -->
-                  <div class="swiper user-select-none" id="sliderImages" data-swiper="{
-                    &quot;allowTouchMove&quot;: false,
-                    &quot;loop&quot;: true,
-                    &quot;effect&quot;: &quot;fade&quot;,
-                    &quot;fadeEffect&quot;: {
-                      &quot;crossFade&quot;: true
-                    }
-                  }">
-                    <div class="swiper-wrapper">
-                     
-						<% for(i=0;i<result[1].length;i++) { %>
-						
-						
-						<div class="swiper-slide d-flex justify-content-end">
-                        <div class="ratio rtl-flip" style="max-width: 495px; --cz-aspect-ratio: calc(537 / 495 * 100%)">
-                          <img src="/images/<%=result[1][i].image%>" alt="Image">
-                        </div>
-                      </div>
-
-					  <% } %>
-                     
+                      <% } %>
                     </div>
                   </div>
                 </div>
               </div>
-
+      
               <!-- Scrollbar -->
               <div class="row justify-content-center" data-bs-theme="dark">
                 <div class="col-xxl-10">
@@ -670,6 +633,7 @@
           </div>
         </div>
       </section>
+      
 
 
       <!-- Features -->

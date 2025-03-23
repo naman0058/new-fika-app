@@ -91,7 +91,7 @@ router.get('/',(req,res)=>{
 
 router.post(
     '/insert',
-    upload.fields([{ name: 'image', maxCount: 1 }, { name: 'image1', maxCount: 10 }]), 
+    upload.fields([{ name: 'image', maxCount: 1 }, { name: 'image1', maxCount: 20 }]), 
     (req, res) => {
       let body = req.body;
   
@@ -458,7 +458,7 @@ router.post('/menu/update', (req, res) => {
 router.get('/view-images',(req,res)=>{
     pool.query(`select * from productimages where productid = '${req.query.id}'`,(err,result)=>{
         if(err) throw err;
-        else res.render('view_images',{result})
+        else res.render('view_images',{result,id:req.query.id})
     })
 })
 
@@ -486,6 +486,44 @@ router.post('/update-other-image', upload.single('image'), (req, res) => {
       }
     );
   });
+
+
+
+  router.post('/add-new-image', upload.fields([{ name: 'image', maxCount: 20 }]), async (req, res) => {
+    let { productid } = req.body; // Get product ID from request
+
+    console.log('body', req.body);
+    console.log('files', req.files);
+
+    // If productid is an array, take the first value
+    if (Array.isArray(productid)) {
+        productid = productid[0]; 
+    }
+
+    if (!req.files || !req.files.image || req.files.image.length === 0) {
+        return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    if (!productid) {
+        return res.status(400).json({ error: 'Product ID is required' });
+    }
+
+    try {
+        const mediaPaths = req.files.image.map(file => file.filename); // Extract filenames
+
+        // Insert each image into the database
+        for (const mediaPath of mediaPaths) {
+            console.log('Inserting - Product ID:', productid, 'Image:', mediaPath);
+            await pool.query('INSERT INTO productimages (productid, image) VALUES (?, ?)', [productid, mediaPath]);
+        }
+
+        res.json({ message: 'Upload successful', paths: mediaPaths });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
 
 
 module.exports = router;

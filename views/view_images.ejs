@@ -6,8 +6,22 @@
             <div class="row">
               <div class="col-12 col-md-12 col-lg-12">
               
-    <button type="button" class="btn btn-primary float-right" id="exportBtn1" style="float: right;margin-top:25px;margin-right:20px;margin-bottom: 20px;">Export Data</button>
             
+                <div class="card mt-4">
+                  <div class="card-header">
+                    <h4>Add New Image or Video</h4>
+                  </div>
+                  <div class="card-body">
+                    <form id="addMediaForm" enctype="multipart/form-data">
+                      <div class="form-group">
+                        <label>Upload Image or Video</label>
+                        <input type="hidden" name="productid" id="productid" value="<%= id %>">
+                        <input type="file" name="image" class="form-control" accept="image/*,video/*" required multiple>
+                      </div>
+                      <button type="submit" class="btn btn-success">Upload</button>
+                    </form>
+                  </div>
+                </div>
                 
                 <div class="table-responsive">
 
@@ -155,6 +169,31 @@
   
 
 
+  <script>
+    $(document).ready(function () {
+      $('#addMediaForm').submit(function (e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        formData.append("productid", $('#productid').val()); // Append product ID
+  
+        $.ajax({
+          url: '/purchase-product/add-new-image', // Backend route
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            alert('File uploaded successfully!');
+            window.location.reload(); // Refresh to show new media
+          },
+          error: function () {
+            alert('File upload failed, please try again.');
+          }
+        });
+      });
+    });
+  </script>
 
 
 

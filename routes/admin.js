@@ -78,7 +78,7 @@ router.get('/dashboard',(req,res)=>{
     var query3 =  `select count(id) as total from users;`
     var query4 = `select count(id) as total from booking where status != 'completed';`
     var query5 = `select count(id) as total from booking where status = 'completed';`
-    var query6 = `select count(id) as total from booking;`
+    var query6 = `SELECT COUNT(id) AS total FROM booking WHERE status IN ('replacement', 'replacement_accept');`;
     var query7 = `select sum(price) as total from booking;`
     var query8 = `select sum(price) as total from booking where date = '${today}';`
     var query9 = `select b.* , 
