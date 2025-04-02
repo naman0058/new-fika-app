@@ -107,6 +107,36 @@ unselectable {
                   <div class="card-body">
                   
                       <div class="row">
+
+
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="form-group">
+                              <label>SKU No.</label>
+                            <input type="text" class="form-control" name="sku" id="sku" readonly>
+                            </div>
+                            
+                        </div>
+
+
+                        <script>
+                          function generateSKU() {
+                              const now = new Date();
+                              const timestamp = now.getFullYear().toString() + 
+                                                (now.getMonth() + 1).toString().padStart(2, '0') + 
+                                                now.getDate().toString().padStart(2, '0') + 
+                                                now.getHours().toString().padStart(2, '0') + 
+                                                now.getMinutes().toString().padStart(2, '0') + 
+                                                now.getSeconds().toString().padStart(2, '0') + 
+                                                now.getMilliseconds().toString().padStart(3, '0'); 
+                      
+                              return 'SKU-' + timestamp;
+                          }
+                      
+                          document.getElementById("sku").value = generateSKU();
+                      </script>
+                        
+
+
                           <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group">
                                 <label>Category Name</label>

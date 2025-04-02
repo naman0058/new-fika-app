@@ -2192,7 +2192,9 @@ router.post('/order-now', async (req, res) => {
 
       // Fetch cart data and process the order
       pool.query(`SELECT c.* ,
-         (select p.name from product p where p.id = c.booking_id) as product_name FROM cart c WHERE c.usernumber = '${req.session.usernumber}'`, async (err, result) => {
+         (select p.name from product p where p.id = c.booking_id) as product_name,
+         (select p.sku from product p where p.id = c.booking_id) as product_sku
+         FROM cart c WHERE c.usernumber = '${req.session.usernumber}'`, async (err, result) => {
         if (err) throw err;
       console.log('result fetch',result)
         const data = result.map((item) => ({
@@ -2210,7 +2212,8 @@ router.post('/order-now', async (req, res) => {
           shipping_charges: 0,
           quantity : item.quantity,
           booking_id : item.booking_id,
-          product_name:item.product_name
+          product_name:item.product_name,
+          product_sku:item.product_sku
         }));
 
 
@@ -2268,7 +2271,7 @@ router.post('/order-now', async (req, res) => {
               shipping_is_billing: true,
               order_items: data.map((item) => ({
                 name: item.product_name,
-                sku: item.sku || '0',
+                sku: item.product_sku || 'SKU-20250402125200046',
                 units: item.quantity,
                 selling_price: item.price,
               })),
@@ -2875,7 +2878,10 @@ router.get('/make-order',(req,res)=>{
       body['date'] = today;
 
       // Fetch cart data and process the order
-      pool.query(`SELECT c.* , (select p.name from product p where p.id = c.booking_id) as product_name FROM cart c WHERE c.usernumber = '${req.session.usernumber}'`, async (err, result) => {
+      pool.query(`SELECT c.* , 
+        (select p.name from product p where p.id = c.booking_id) as product_name,
+        (select p.sku from product p where p.id = c.booking_id) as product_sku
+         FROM cart c WHERE c.usernumber = '${req.session.usernumber}'`, async (err, result) => {
         if (err) throw err;
       console.log('result fetch online',result)
         const data = result.map((item) => ({
@@ -2893,7 +2899,8 @@ router.get('/make-order',(req,res)=>{
           shipping_charges: 0,
           quantity : item.quantity,
           booking_id : item.booking_id,
-          product_name:item.product_name
+          product_name:item.product_name,
+          product_sku:item.product_sku
         }));
 
 
@@ -2951,7 +2958,7 @@ router.get('/make-order',(req,res)=>{
               shipping_is_billing: true,
               order_items: data.map((item) => ({
                 name: item.product_name,
-                sku: item.sku || '0',
+                sku: item.product_sku || 'SKU-20250402125200046',
                 units: item.quantity,
                 selling_price: item.price,
               })),
@@ -4581,7 +4588,9 @@ router.post("/accept-replacement", async (req, res) => {
     // Fetch booking details based on orderId and payment method 'prepaid'
     const bookingResult = await queryAsync(
       `SELECT b.*, 
-      (select p.name from product p where p.id = b.booking_id) as productname
+      (select p.name from product p where p.id = b.booking_id) as productname,
+      (select p.sku from product p where p.id = b.booking_id) as product_sku
+
       FROM booking b WHERE id = ?`,
       [orderId]
     );
@@ -4645,12 +4654,12 @@ router.post("/accept-replacement", async (req, res) => {
       order_items: [
         {
           name: bookingData.productname || "Unknown",
-          sku: bookingData.sku || "0",
+          sku: bookingData.product_sku || "SKU-20250402125200046",
           units: bookingData.quantity,
           selling_price: bookingData.price,
           hsn:bookingData.hsn || "123654789",
           exchange_item_name:bookingData.productname || "Unknown",
-          exchange_item_sku: bookingData.sku || "0",
+          exchange_item_sku: bookingData.product_sku || "SKU-20250402125200046",
 
         },
       ],
