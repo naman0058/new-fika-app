@@ -500,6 +500,8 @@ router.get('/shop/subcategory',(req,res)=>{
   })
 
 
+  const he = require('he');
+
 
 
 router.get('/product',fetchCartData,(req,res)=>{
@@ -540,7 +542,8 @@ router.get('/product',fetchCartData,(req,res)=>{
        pool.query(query+query1+query2+query6+query7+query8+query9+query10+query11+query12+query13+query14,(err,result)=>{
         if(err) throw err;
         else{
-
+          let decodedDescription = he.decode(result[1][0].description);
+          let shortDecodeDescription = he.decode(result[1][0].short_description);
           let ratingsData = {};
           let totalReviews = 0;
       
@@ -568,7 +571,9 @@ router.get('/product',fetchCartData,(req,res)=>{
             cartData: req.cartData,
             ratingsData: ratingsData,
             ratingsPercentages: ratingsPercentages,
-            totalReviews: totalReviews
+            totalReviews: totalReviews,
+            decodedDescription:decodedDescription,
+            shortDecodeDescription:shortDecodeDescription
         });
 
         } 
@@ -612,6 +617,8 @@ router.get('/product',fetchCartData,(req,res)=>{
         if(err) throw err;
         else{
 
+          let decodedDescription = he.decode(result[1][0].description);
+          let shortDecodeDescription = he.decode(result[1][0].short_description);
           let ratingsData = {};
           let totalReviews = 0;
       
@@ -639,7 +646,9 @@ router.get('/product',fetchCartData,(req,res)=>{
             cartData: req.cartData,
             ratingsData: ratingsData,
             ratingsPercentages: ratingsPercentages,
-            totalReviews: totalReviews
+            totalReviews: totalReviews,
+            decodedDescription:decodedDescription,
+            shortDecodeDescription:shortDecodeDescription
         });
 
         } 
@@ -3597,6 +3606,32 @@ router.get('/confirmation', fetchCartData, (req, res) => {
                   // Send email to admin
                   await verify.sendUserMail(adminEmail, adminSubject, adminMessage);
                   console.log('Order details sent to admin:', adminEmail);
+
+// admin message send
+    const adminSMSSend = await sendFlowSMS({
+      authkey: '439478ACHleixac56800ac1eP1',
+      template_id: '680f6c76d6fc05238f0d6ac2',
+      mobile: '918950094006',
+      var1: orderId,
+      var2:orderData.price,
+      var3: 'info@fikaonline.in'
+    });
+
+
+
+    // user sms send
+
+    const userSMSSend = await sendFlowSMS({
+      authkey: '439478ACHleixac56800ac1eP1',
+      template_id: '6806429bd6fc055238538ba2',
+      mobile: 91+usernumber,
+      var1: orderId,
+      var2:orderData.price,
+      var3: 'info@fikaonline.in'
+    });
+
+
+
               } catch (emailError) {
                   console.error('Error sending order confirmation email:', emailError);
               }

@@ -495,10 +495,14 @@ result[1][0].description = stripHtml(result[1][0].description);
             <h2 class="h3 pb-2 pb-md-3">Product details</h2>
             <h3 class="h6">Short Description</h3>
           
-            <div id="short_description"><%= result[1][0].short_description %></div><br/>
+            <div id="short_description"><%- shortDecodeDescription %></div><br/>
             <h3 class="h6">Full Details</h3>
-            <div id="description"><%= result[1][0].description %></div>
-         
+
+           <div id="description"><%-decodedDescription %></div>
+
+          
+           
+            
 
 
             <!-- Reviews -->

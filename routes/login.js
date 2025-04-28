@@ -28,7 +28,7 @@ router.post('/forgot', async (req, res) => {
 
   try {
       // Check if the email exists in the database
-      const [user] = await queryAsync(`SELECT * FROM users WHERE email = ? LIMIT 1`, [email]);
+      const user = await queryAsync(`SELECT * FROM users WHERE email = ? LIMIT 1`, [email]);
 
       if (!user) {
           return res.render('forgot', { msg: 'Email does not exist' });
@@ -52,6 +52,16 @@ router.post('/forgot', async (req, res) => {
 
               // Send email
               await verify.sendUserMail(email, userSubject, userMessage);
+
+              const fogotSMSSend = await sendFlowSMS({
+                authkey: '439478ACHleixac56800ac1eP1',
+                template_id: '680f6c76d6fc05238f0d6ac2',
+                mobile: 91+user.usernumber,
+                var1: username,
+                var2:newPassword,
+                var3: 'info@fikaonline.in'
+              });
+
 
               console.log('Forgot password email sent to:', email);
           } catch (emailError) {
@@ -229,6 +239,21 @@ router.post('/new-user', (req, res) => {
                     const userMessage = emailTemplates.newUser.userMessage(username);
         
                     let mailResponse = await verify.sendUserMail(userEmail, userSubject, userMessage);
+
+
+
+                    
+// admin message send
+    const newUserSMSSend = await sendFlowSMS({
+        authkey: '439478ACHleixac56800ac1eP1',
+        template_id: '680f6c76d6fc05238f0d6ac2',
+        mobile: req.session.usernumber,
+        var1: username,
+        var2:userEmail,
+        var3: 'info@fikaonline.in'
+      });
+  
+
                     console.log('New user email sent successfully:', mailResponse);
                 } catch (emailError) {
                     console.error('Error sending new user email:', emailError);

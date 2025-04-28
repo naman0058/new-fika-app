@@ -572,7 +572,7 @@ unselectable {
 
             
 
-            <div class="container">
+            <!-- <div class="container"> -->
               <label>Product Details</label>
              
               <div class="editor-toolbar">
@@ -612,7 +612,7 @@ unselectable {
               </div> -->
             </div>
             
-          
+          </div>
 
           
 
@@ -899,9 +899,12 @@ $('.uploadImage').submit(function (e) {
            console.log(response);
            if(response.status == '300' || response.status == 300) {
                alert(response.description);
-           } else {
+           } else if(response.type == 'success') {
                alert('Successfully uploaded!');
                window.location.reload();
+           }
+           else{
+            alert('Error Occured')
            }
        },
        error: function(xhr, status, error) {

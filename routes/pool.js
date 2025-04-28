@@ -9,7 +9,8 @@ const pool = mysql.createPool({
   password:'AVNS_GQrps4okJNd-Q3VSn68',
     database: 'leffet',
     port:'25060',
-    multipleStatements: true
+    multipleStatements: true,
+    charset: 'utf8mb4'  // << VERY IMPORTANT
   })
 
 
