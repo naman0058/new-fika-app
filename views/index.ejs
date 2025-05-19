@@ -22,43 +22,93 @@
       </head>
       
       <body>
-        <section class="container-fluid pt-4">
-          <div class="row">
-            <div class="col-12">
-              <!-- Swiper Slider -->
-              <div class="swiper" data-swiper="{
-                &quot;spaceBetween&quot;: 64,
-                &quot;loop&quot;: true,
-                &quot;speed&quot;: 400,
-                &quot;autoplay&quot;: {
-                  &quot;delay&quot;: 5500,
-                  &quot;disableOnInteraction&quot;: false
-                },
-                &quot;scrollbar&quot;: {
-                  &quot;el&quot;: &quot;.swiper-scrollbar&quot;
-                },
-                &quot;pagination&quot;: {
-                  &quot;el&quot;: &quot;.swiper-pagination&quot;,
-                  &quot;clickable&quot;: true
-                }
-              }">
-                <div class="swiper-wrapper">
-                  <% for(i=0;i<result[1].length;i++) { %>
-                    <div class="swiper-slide text-center">
-                      <a href="<%=result[1][i].link%>">
-                        <img src="https://fikaonline.in/images/<%=result[1][i].image%>" class="d-block w-100" alt="Image">
-                      </a>
-                    </div>
-                  <% } %>
-                </div>
-      
-                <!-- Pagination (dots) -->
-                <div class="swiper-pagination"></div>
-              </div>
+      <section class="container-fluid pt-4">
+  <div class="row">
+    <div class="col-12">
+
+      <!-- Swiper Slider -->
+      <div class="swiper desktop-banner" data-swiper='{
+        "spaceBetween": 64,
+        "loop": true,
+        "speed": 400,
+        "autoplay": {
+          "delay": 5500,
+          "disableOnInteraction": false
+        },
+        "scrollbar": {
+          "el": ".swiper-scrollbar"
+        },
+        "pagination": {
+          "el": ".swiper-pagination",
+          "clickable": true
+        }
+      }'>
+        <div class="swiper-wrapper">
+          <% for(let i = 0; i < result[1].length; i++) { 
+               if(result[1][i].type === 'Desktop Banner') { %>
+            <div class="swiper-slide text-center">
+              <a href="<%= result[1][i].link %>">
+                <img src="/images/<%= result[1][i].image %>" class="d-block w-100" alt="Desktop Banner">
+              </a>
             </div>
-          </div>
-        </section>
-      
+          <% }} %>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+
+      <!-- Mobile Banner Swiper -->
+      <div class="swiper mobile-banner" data-swiper='{
+        "spaceBetween": 64,
+        "loop": true,
+        "speed": 400,
+        "autoplay": {
+          "delay": 5500,
+          "disableOnInteraction": false
+        },
+        "scrollbar": {
+          "el": ".swiper-scrollbar"
+        },
+        "pagination": {
+          "el": ".swiper-pagination",
+          "clickable": true
+        }
+      }'>
+        <div class="swiper-wrapper">
+          <% for(let i = 0; i < result[1].length; i++) { 
+               if(result[1][i].type === 'Mobile Banner') { %>
+            <div class="swiper-slide text-center">
+              <a href="<%= result[1][i].link %>">
+                <img src="/images/<%= result[1][i].image %>" class="d-block w-100" alt="Mobile Banner">
+              </a>
+            </div>
+          <% }} %>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+
+    </div>
+  </div>
+
+<style>
+  /* Hide mobile banner by default */
+.mobile-banner {
+  display: none;
+}
+
+/* Show mobile banner, hide desktop banner on small devices */
+@media (max-width: 767px) {
+  .mobile-banner {
+    display: block;
+  }
+  .desktop-banner {
+    display: none;
+  }
+}
+
+</style>
+
+</section>
+
         <!-- Swiper JS -->
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
       

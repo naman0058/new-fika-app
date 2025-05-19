@@ -39,7 +39,7 @@ console.log(req.session.usernumber)
 
  if(req.session.usernumber){
   var query1 = `select * from category;`
-  var query2 = `select * from banner where type = 'Front Banner' order by id desc;`
+  var query2 = `select * from banner;`
   var query3 = `select * from users where usernumber = '${req.session.usernumber}';`
   var query5 = `select p.* ,
   (select m.net_amount from product_manage m where m.productid = p.id) as net_amount,
@@ -76,7 +76,7 @@ console.log(req.session.usernumber)
  }
  else{
   var query1 = `select * from category;`
-  var query2 = `select * from banner where type = 'Front Banner' order by id desc;`
+  var query2 = `select * from banner;`
   var query3 = `select * from cart where usernumber = '${req.session.ipaddress}';`
   
 
