@@ -22,13 +22,13 @@ const transporter = nodemailer.createTransport({
 
 
 // Test email sending
-transporter.verify((error, success) => {
-    if (error) {
-        console.error('SMTP Connection Error:', error);
-    } else {
-        console.log('SMTP Server is Ready to Send Emails');
-    }
-});
+// transporter.verify((error, success) => {
+//     if (error) {
+//         console.error('SMTP Connection Error:', error);
+//     } else {
+//         console.log('SMTP Server is Ready to Send Emails');
+//     }
+// });
 
 
 
