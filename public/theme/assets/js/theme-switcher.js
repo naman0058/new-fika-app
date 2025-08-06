@@ -1,7 +1,3 @@
-/**
- * Switch between light and dark themes (color modes)
- */
-
 ;(() => {
   'use strict'
 
@@ -10,74 +6,71 @@
 
   const getPreferredTheme = () => {
     const storedTheme = getStoredTheme()
-    if (storedTheme) {
-      return storedTheme
-    }
-
-    // Set default theme to 'light'.
-    // Possible options: 'dark' or system color mode (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    if (storedTheme) return storedTheme
     return 'light'
   }
 
   const setTheme = (theme) => {
+    const html = document.documentElement
+
+    // Remove existing theme classes
+    html.classList.remove('light-theme', 'dark-theme')
+
+    // Set Bootstrap data attribute (if you're using Bootstrap 5 theme support)
+    html.setAttribute('data-bs-theme', theme === 'auto'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme
+    )
+
+    // Add theme class for custom styling
     if (theme === 'auto') {
-      document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-theme' : 'light-theme'
+      html.classList.add(systemTheme)
     } else {
-      document.documentElement.setAttribute('data-bs-theme', theme)
+      html.classList.add(`${theme}-theme`)
     }
   }
 
-  setTheme(getPreferredTheme())
-
   const showActiveTheme = (theme, focus = false) => {
     const themeSwitcher = document.querySelector('.theme-switcher')
-
-    if (!themeSwitcher) {
-      return
-    }
+    if (!themeSwitcher) return
 
     const activeThemeIcon = document.querySelector('.theme-icon-active i')
-    const btnToActive = document.querySelector(
-      `[data-bs-theme-value="${theme}"]`
-    )
+    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
     const iconOfActiveBtn = btnToActive.querySelector('.theme-icon i').className
 
-    document.querySelectorAll('[data-bs-theme-value]').forEach((element) => {
-      element.classList.remove('active')
-      element.setAttribute('aria-pressed', 'false')
+    document.querySelectorAll('[data-bs-theme-value]').forEach(el => {
+      el.classList.remove('active')
+      el.setAttribute('aria-pressed', 'false')
     })
 
     btnToActive.classList.add('active')
     btnToActive.setAttribute('aria-pressed', 'true')
     activeThemeIcon.className = iconOfActiveBtn
-    themeSwitcher.setAttribute(
-      'aria-label',
-      `Toggle theme (${btnToActive.dataset.bsThemeValue})`
-    )
+    themeSwitcher.setAttribute('aria-label', `Toggle theme (${theme})`)
 
-    if (focus) {
-      themeSwitcher.focus()
-    }
+    if (focus) themeSwitcher.focus()
   }
 
-  window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', () => {
-      const storedTheme = getStoredTheme()
-      if (storedTheme !== 'light' && storedTheme !== 'dark') {
-        setTheme(getPreferredTheme())
-      }
-    })
+  // Detect system theme change if auto is selected
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (getStoredTheme() === 'auto') {
+      setTheme('auto')
+    }
+  })
 
+  // On load
   window.addEventListener('DOMContentLoaded', () => {
-    showActiveTheme(getPreferredTheme())
+    const theme = getPreferredTheme()
+    setTheme(theme)
+    showActiveTheme(theme)
 
-    document.querySelectorAll('[data-bs-theme-value]').forEach((toggle) => {
+    document.querySelectorAll('[data-bs-theme-value]').forEach(toggle => {
       toggle.addEventListener('click', () => {
-        const theme = toggle.getAttribute('data-bs-theme-value')
-        setStoredTheme(theme)
-        setTheme(theme)
-        showActiveTheme(theme, true)
+        const selectedTheme = toggle.getAttribute('data-bs-theme-value')
+        setStoredTheme(selectedTheme)
+        setTheme(selectedTheme)
+        showActiveTheme(selectedTheme, true)
       })
     })
   })
