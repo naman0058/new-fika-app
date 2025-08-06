@@ -26,19 +26,45 @@ router.get('/logout',(req,res)=>{
 })
 
 
-router.get('/change-password',(req,res)=>{
+const nodemailer = require('nodemailer');
 
-var otp = Math.floor(Math.random()*100000)+1;
+// Create a transporter for sending emails
+const transporter = nodemailer.createTransport({
+  host: 'smtpout.secureserver.net', // GoDaddy's SMTP server
+  port: 465, // Secure port for SSL
+  secure: true,
+  auth: {
+    user: 'info@fikaonline.in', // Your GoDaddy email address
+    pass: 'Fika@1234', // Your GoDaddy email password
+  },
+});
 
-    request(`http://mysmsshop.in/V2/http-api.php?apikey=gCuJ0RSBDLC3xKj6&senderid=SAFEDI&number=8319339945&message=Use OTP ${otp} to change password your DailyNourish Account.&format=json`, { json: true }, (err, result) => {
-        if (err) { return console.log(err); }
-       else {
-           req.session.otp = otp
-        res.render('change-password',{msg:''})
-       }
-    })
-   
-})
+router.get('/change-password', (req, res) => {
+  const otp = Math.floor(Math.random() * 100000) + 1;
+
+  console.log('otp send',otp)
+
+  const mailOptions = {
+    from: '"Fika Online" <info@fikaonline.in>',
+    to: 'Amitali910@gmail.com',
+    subject: 'Your OTP for Password Change – FIKA',
+    html: `<p>Use the following OTP to change your FIKA account password:</p>
+           <h2 style="color: #0061ff;">${otp}</h2>
+           <p>This OTP is valid for a limited time. Do not share it with anyone.</p>`
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending OTP email:', error);
+      return res.render('change-password', { msg: 'Failed to send OTP email. Please try again.' });
+    } else {
+      console.log('OTP email sent:', info.response);
+      req.session.otp = otp;
+      res.render('change-password', { msg: '' });
+    }
+  });
+});
+
 
 
 

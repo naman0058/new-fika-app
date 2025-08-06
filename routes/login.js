@@ -4,6 +4,8 @@ var pool =  require('./pool');
 const emailTemplates = require('./emailTemplates'); // Email templates
 const verify = require('./verify'); 
 const util = require("util");
+const fetchCartData = require('./fetchCartData');
+
 
 queryAsync = util.promisify(pool.query).bind(pool);
 
@@ -78,9 +80,39 @@ router.post('/forgot', async (req, res) => {
 
 
 
-router.get('/',(req,res)=>{
-  res.render('login',{msg : ''})
+router.get('/',fetchCartData,(req,res)=>{
+  if(req.session.usernumber) {
+    var query = `select * from category order by id desc;`
+    var query1 = `select * from website_customize where name = 'pp';`
+    var query2 = `select * from website_customize where name = 'about';`
+
+    var query6 = `select * from users where usernumber = '${req.session.usernumber}';`
+    var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.usernumber}';`
+    var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
+    pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
+      if(err) throw err;
+     
+      else res.render('login',{result,login:true,msg:'',title:'Privacy Ploicy',cartData:req.cartData})
+    })
+  }
+  else{
+    var query = `select * from category order by id desc;`
+    var query1 = `select * from website_customize where name = 'pp' ;`
+
+    var query2 = `select * from website_customize where name = 'about';`
+
+    var query6 = `select * from users where id = '84';`
+    var query7 = `select sum(quantity) as counter from cart where usernumber = '${req.session.ipaddress}';`
+    var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.ipaddress}';`
+    pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
+      if(err) throw err;
+      else res.render('login',{result,login:false,msg:'',title:'Privacy Ploicy',cartData:req.cartData})
+    })
+  }
 })
+
+
+
 
 
 router.get('/forgot',(req,res)=>{

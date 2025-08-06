@@ -49,7 +49,7 @@
                if(result[1][i].type === 'Desktop Banner') { %>
             <div class="swiper-slide text-center">
               <a href="<%= result[1][i].link %>">
-                <img src="/images/<%= result[1][i].image %>" class="d-block w-100" alt="Desktop Banner">
+                <img src="https://www.fikaonline.in/images/<%= result[1][i].image %>" class="d-block w-100" alt="Desktop Banner">
               </a>
             </div>
           <% }} %>
@@ -79,7 +79,7 @@
                if(result[1][i].type === 'Mobile Banner') { %>
             <div class="swiper-slide text-center">
               <a href="<%= result[1][i].link %>">
-                <img src="/images/<%= result[1][i].image %>" class="d-block w-100" alt="Mobile Banner">
+                <img src="https://www.fikaonline.in/images/<%= result[1][i].image %>" class="d-block w-100" alt="Mobile Banner">
               </a>
             </div>
           <% }} %>
@@ -232,7 +232,7 @@
             <!-- Item -->
             <div class="position-relative animate-underline d-flex align-items-center ps-xl-3">
               <div class="ratio ratio-1x1 flex-shrink-0" style="width: 110px">
-                <img src="/images/<%=result[3][i].image%>" alt="<%=result[3][i].name%>">
+                <img src="https://www.fikaonline.in/images/<%=result[3][i].image%>" alt="<%=result[3][i].name%>">
               </div>
               <div class="w-100 min-w-0 ps-2 ps-sm-3">
                 
@@ -259,7 +259,7 @@
             <!-- Item -->
             <div class="position-relative animate-underline d-flex align-items-center ps-xl-3">
               <div class="ratio ratio-1x1 flex-shrink-0" style="width: 110px">
-                <img src="/images/<%=result[3][i].image%>" width="110" alt="<%=result[3][i].name%>">
+                <img src="https://www.fikaonline.in/images/<%=result[3][i].image%>" width="110" alt="<%=result[3][i].name%>">
               </div>
               <div class="w-100 min-w-0 ps-2 ps-sm-3">
               
@@ -278,6 +278,21 @@
           </div>
         </div>
       </section>
+
+
+
+        <style>
+        /* Light Theme */
+.productname {
+  color: black;
+}
+
+.productprice {
+  color: black;
+}
+
+
+      </style>
 
 
       <!-- Trending products (Grid) -->
@@ -338,7 +353,7 @@
             <!-- done -->
 					  
                   <div class="ratio" style="--cz-aspect-ratio: calc(240 / 258 * 100%)">
-                    <img src="/images/<%=result[4][i].image%>" alt="<%=result[4][i].name%>">
+                    <img src="https://www.fikaonline.in/images/<%=result[4][i].image%>" alt="<%=result[4][i].name%>">
                   </div>
                 </a>
               </div>
@@ -355,11 +370,11 @@
                 </div> -->
                 <h3 class="pb-1 mb-2">
                   <a class="d-block fs-sm fw-medium text-truncate" href="/product?id=<%=result[4][i].id%>">
-                    <span class="animate-target"><%=result[4][i].name%></span>
+                    <span class="animate-target productname"><%=result[4][i].name%></span>
                   </a>
                 </h3>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="h5 lh-1 mb-0">Rs.<%=result[4][i].net_amount%> <del class="text-body-tertiary fs-sm fw-normal">Rs.<%=result[4][i].price%></del></div>
+                  <div class="h5 lh-1 mb-0 productprice">Rs.<%=result[4][i].net_amount%> <del class="text-body-tertiary fs-sm fw-normal">Rs.<%=result[4][i].price%></del></div>
                   <button type="button" onclick="addToCart('<%=result[4][i].id%>')" class="product-card-button btn btn-icon btn-secondary animate-slide-end ms-2" aria-label="Add to Cart">
                     <i class="ci-shopping-cart fs-base animate-target"></i>
                   </button>
@@ -581,7 +596,7 @@
                     </div>
                     <a class="d-block rounded-top overflow-hidden p-3 p-sm-4" href="/product?id=<%=result[8][i].id%>">
                       <div class="ratio" style="--cz-aspect-ratio: calc(240 / 258 * 100%)">
-                        <img src="/images/<%=result[8][i].image%>" alt="Wireless Buds">
+                        <img src="https://www.fikaonline.in/images/<%=result[8][i].image%>" alt="Wireless Buds">
                       </div>
                     </a>
                   </div>

@@ -3684,7 +3684,7 @@ router.post('/add_wishlist',(req,res)=>{
 
 
 
-router.get('/signup',(req,res)=>{
+router.get('/signup',fetchCartData,(req,res)=>{
   var query = `select * from category order by id desc;`
   var query1 = `select * from website_customize where name = 'pp';`
   var query2 = `select * from website_customize where name = 'about';`
@@ -3694,7 +3694,7 @@ router.get('/signup',(req,res)=>{
   var query8 = `select count(id) as counter from wishlist where usernumber = '${req.session.usernumber}';`
     pool.query(query+query1+query2+query6+query7+query8,(err,result)=>{
         if(err) throw err;
-        else res.render('signup',{msg : '' , login:false,result:result})
+        else res.render('signup',{msg : '' , login:false,result:result,cartData:req.cartData})
         // else res.json(result)
     })
   

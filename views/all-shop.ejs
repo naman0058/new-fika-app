@@ -22,6 +22,22 @@
       <!-- Page title -->
 
 
+
+
+        <style>
+        /* Light Theme */
+.productname {
+  color: black;
+}
+
+.productprice {
+  color: black;
+}
+
+
+      </style>
+
+
       <!-- Banners that are turned into collaspse on screens < 768px wide (sm breakpoint) -->
       <section class="accordion container pb-4 pb-md-5 mb-xl-3">
         <div class="accordion-item border-0">
@@ -40,8 +56,8 @@
                  
                   <% if (result[1] && result[1].length > 0) { %>
                     <div class="position-relative z-1 text-center text-sm-start pt-4 pt-sm-0 ps-xl-4 mt-2 mt-sm-0 order-sm-2">
-                      <p class="fs-sm text-light-emphasis mb-sm-4"><%= result[1][0].name %></p>
-                      <a class="btn btn-primary" href="/product?id=<%= result[1][0].id %>">
+                      <p class="fs-sm text-light-emphasis mb-sm-4 productname"><%= result[1][0].name %></p>
+                      <a class="btn btn-primary productprice" href="/product?id=<%= result[1][0].id %>">
                         From <%= result[1][0].net_amount %>
                         <i class="ci-arrow-up-right fs-base ms-1 me-n1"></i>
                       </a>
@@ -66,8 +82,8 @@
                   <span class="position-absolute top-0 start-0 w-100 h-100 d-none d-block-dark rtl-flip" style="background: linear-gradient(90deg, #1b273a 0%, #1f2632 100%)"></span>
                   <div class="position-relative z-1 text-center text-sm-start pt-4 pt-sm-0 ps-xl-4 mt-2 mt-sm-0 order-sm-2">
                     <!-- <h2 class="h3 mb-2"><%=result[1][0].name%></h2> -->
-                    <p class="fs-sm text-light-emphasis mb-sm-4"><%=result[1][1].name%></p>
-                    <a class="btn btn-primary" href="/product?id=<%=result[1][1].id%>">
+                    <p class="fs-sm text-light-emphasis mb-sm-4 productname"><%=result[1][1].name%></p>
+                    <a class="btn btn-primary productprice" href="/product?id=<%=result[1][1].id%>">
                       From <%=result[1][1].net_amount%>
                       <i class="ci-arrow-up-right fs-base ms-1 me-n1"></i>
                     </a>
@@ -186,11 +202,11 @@
                     </div> -->
                     <h3 class="pb-1 mb-2">
                       <a class="d-block fs-sm fw-medium text-truncate" href="/product?id=<%=result[1][i].id%>">
-                        <span class="animate-target"><%=result[1][i].name%></span>
+                        <span class="animate-target productname"><%=result[1][i].name%></span>
                       </a>
                     </h3>
                     <div class="d-flex align-items-center justify-content-between">
-                      <div class="h5 lh-1 mb-0">Rs.<%=result[1][i].net_amount%> <del class="text-body-tertiary fs-sm fw-normal">Rs.<%=result[1][i].price%></del></div>
+                      <div class="h5 lh-1 mb-0 productprice">Rs.<%=result[1][i].net_amount%> <del class="text-body-tertiary fs-sm fw-normal">Rs.<%=result[1][i].price%></del></div>
                       <button type="button" onclick="addToCart('<%=result[1][i].id%>')" class="product-card-button btn btn-icon btn-secondary animate-slide-end ms-2" aria-label="Add to Cart">
                         <i class="ci-shopping-cart fs-base animate-target"></i>
                       </button>
