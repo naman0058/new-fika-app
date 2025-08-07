@@ -11,7 +11,7 @@ const emailTemplates = {
                 <li>💳 <strong>Secure Payments:</strong> Safe and seamless payment options.</li>
             </ul>
             <p>Start exploring our collection now and enjoy shopping like never before!</p>
-            <p>If you have any questions, feel free to reach out to our support team at <a href="mailto:info@fikaonline.in">info@fikaonline.in</a> or call us at <strong>+91-895-009-4006</strong>.</p>
+            <p>If you have any questions, feel free to reach out to our support team at <a href="mailto:info@fikaonline.in">info@fikaonline.in</a> or call us at <strong>+91-819-895-8764</strong>.</p>
             <p>Happy Shopping! 🛒</p>
             <p>Best Regards,</p>
             <p><strong>The FIKA Team</strong></p>
@@ -30,7 +30,7 @@ const emailTemplates = {
                 <li>💰 <strong>Total Amount:</strong> Rs.${totalAmount}</li>
             </ul>
             <p>We will notify you once your order is shipped. You can track your order in your account.</p>
-            <p>For any queries, contact us at <a href="mailto:info@fikaonline.in">info@fikaonline.in</a> or call <strong>+91-895-009-4006</strong>.</p>
+            <p>For any queries, contact us at <a href="mailto:info@fikaonline.in">info@fikaonline.in</a> or call <strong>+91-819-895-8764</strong>.</p>
             <p>Thank you for choosing FIKA! ❤️</p>
             <p>Best Regards,</p>
             <p><strong>The FIKA Team</strong></p>
@@ -44,7 +44,7 @@ const emailTemplates = {
             <p>Hi ${username},</p>
             <p>Good news! Your order <strong>#${orderId}</strong> has been successfully delivered. 🎉</p>
             <p>We hope you love your purchase! If you have any feedback or issues, let us know.</p>
-            <p>Need help? Contact our support at <a href="mailto:info@fikaonline.in">info@fikaonline.in</a> or call <strong>+91-895-009-4006</strong>.</p>
+            <p>Need help? Contact our support at <a href="mailto:info@fikaonline.in">info@fikaonline.in</a> or call <strong>+91-819-895-8764</strong>.</p>
             <p>Enjoy your new purchase and shop again soon! 🛍️</p>
             <p>Best Regards,</p>
             <p><strong>The FIKA Team</strong></p>
